@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SetnameActivity"
+    android:gravity="center"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/enter_your_name" />
+
+        <EditText
+            android:id="@+id/setname_inputName"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:ems="10"
+            android:inputType="text"
+            android:hint="name"
+            android:textColor="@color/black"
+            android:text=""
+            android:background="@drawable/custom_input" />
+
+        <Button
+            android:id="@+id/setname_button"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:text="시작!"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

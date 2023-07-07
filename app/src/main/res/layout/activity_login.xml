@@ -5,7 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity"
-    android:background="@drawable/start_background">
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/start_background"
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/login_logo"
@@ -19,7 +26,9 @@
         android:id="@+id/login_sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true">
+
+    </com.google.android.gms.common.SignInButton>
 
     <TextView
         android:id="@+id/login_text"
@@ -29,5 +38,50 @@
         android:textSize="40sp"
         android:textColor="@color/black"
         android:layout_centerInParent="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="120dp">
+
+        <ImageView
+            android:id="@+id/login_gif1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_launcher_background" />
+        <ImageView
+            android:id="@+id/login_gif2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_launcher_background" />
+        <ImageView
+            android:id="@+id/login_gif3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_launcher_background" />
+        <ImageView
+            android:id="@+id/login_gif4"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_launcher_background" />
+        <ImageView
+            android:id="@+id/login_gif5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_launcher_background" />
+        <ImageView
+            android:id="@+id/login_gif6"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_launcher_background" />
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -4,7 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:background="@drawable/start_background">
+
+    <ImageView
+        android:id="@+id/login_logo"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/main_logo" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/login_sign_in_button"
@@ -18,6 +27,7 @@
         android:layout_height="wrap_content"
         android:text="Shut The Mouth"
         android:textSize="40sp"
+        android:textColor="@color/black"
         android:layout_centerInParent="true" />
 
 </RelativeLayout>

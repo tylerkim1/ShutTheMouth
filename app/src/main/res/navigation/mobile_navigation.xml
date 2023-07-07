@@ -24,6 +24,6 @@
         tools:layout="@layout/fragment_closet" />
     <fragment
         android:id="@+id/navigation_ready"
-        android:name="com.example.shutthemouth.ui.notifications.ReadyFragment"
+        android:name="com.example.shutthemouth.ui.closet.ReadyFragment"
         tools:layout="@layout/fragment_ready" />
 </navigation>

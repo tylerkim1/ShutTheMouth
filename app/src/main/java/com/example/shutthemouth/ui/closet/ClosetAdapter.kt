@@ -1,5 +1,4 @@
-package com.example.shutthemouth.ui.notifications
-
+package com.example.shutthemouth.ui.closet
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.example.shutthemouth.databinding.GvClosetItemBinding
-import java.text.FieldPosition
-
 
 class ClosetAdapter(items: ArrayList<ClosetItem>, context: Context) :
     BaseAdapter() {

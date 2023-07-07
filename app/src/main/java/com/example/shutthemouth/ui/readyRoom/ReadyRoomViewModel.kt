@@ -1,4 +1,4 @@
-package com.example.shutthemouth.ui.notifications
+package com.example.shutthemouth.ui.closet
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

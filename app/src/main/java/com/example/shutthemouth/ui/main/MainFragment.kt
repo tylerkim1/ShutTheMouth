@@ -1,5 +1,6 @@
 package com.example.shutthemouth.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,9 @@ import androidx.fragment.app.Fragment
 import com.example.shutthemouth.MainGridViewAdapter
 import com.example.shutthemouth.MainRoom
 import com.example.shutthemouth.R
+import com.example.shutthemouth.SetnameActivity
 import com.example.shutthemouth.databinding.FragmentMainBinding
+import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 
 class MainFragment : Fragment() {
 
@@ -50,6 +53,8 @@ class MainFragment : Fragment() {
                 requireContext(), roomList[position].roomId.toString() + " selected",
                 Toast.LENGTH_SHORT
             ).show()
+            val intent = Intent(requireContext(), GameRoomActivity::class.java)
+            startActivity(intent)
         }
 
         return root

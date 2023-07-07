@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/closetbackground"
+    >
+
+    <ImageView
+        android:id="@+id/closet_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        />
+
+    <GridView
+        android:id="@+id/closet_gv"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/closet_avatar"
+        android:layout_above="@id/closet_btn_fin"
+        android:layout_centerHorizontal="true"
+        android:numColumns="3"
+        android:horizontalSpacing="10dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="20dp"
+        android:verticalSpacing="10dp" />
+
+    <Button
+        android:id="@+id/closet_btn_fin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center|left"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

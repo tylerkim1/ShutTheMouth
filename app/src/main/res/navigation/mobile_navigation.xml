@@ -3,28 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_main">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.shutthemouth.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_main"
+        android:name="com.example.shutthemouth.ui.main.MainFragment"
+        android:label="@string/title_main"
+        tools:layout="@layout/fragment_main" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.shutthemouth.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_setting"
+        android:name="com.example.shutthemouth.ui.setting.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.shutthemouth.ui.notifications.ClosetFragment"
-        android:label="@string/title_notifications"
+        android:id="@+id/navigation_closet"
+        android:name="com.example.shutthemouth.ui.closet.ClosetFragment"
+        android:label="@string/title_closet"
         tools:layout="@layout/fragment_closet" />
     <fragment
         android:id="@+id/navigation_ready"
         android:name="com.example.shutthemouth.ui.notifications.ReadyFragment"
         tools:layout="@layout/fragment_ready" />
-
 </navigation>

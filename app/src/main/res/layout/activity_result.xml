@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/resultview_back"
+    tools:context=".ResultActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/resultview_bubble_back">
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/resultview_rank"
+            android:fontFamily="@font/dunggeunmo"
+            android:text="1# 반갑넙죽\n2# 안녕넙죽\n3# MZ넙죽\n4# 레전드넙죽\n5# 한양넙죽\n6# 카이넙죽\n7# 지리는넙죽"
+            android:textSize="40dp"
+            android:textColor="@color/black"
+            >
+        </TextView>
+
+        <Button
+            android:id="@+id/resultview_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/gameroom_exit">
+        </Button>
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/resultview_myavatar"
+            android:layout_gravity="left|bottom"
+            android:src="@drawable/avatar2">
+        </ImageView>
+
+
+        ></FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

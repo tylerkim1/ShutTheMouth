@@ -33,11 +33,9 @@ class ClosetFragment : Fragment() {
 
         //옷장 아이템 추가
         val closetItemList = arrayListOf<ClosetItem>()
-        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuk_sunglass, "sunglass"))
-        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "pant"))
-        closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "glass"))
-
-
+        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuk_sunglass, "sunglass", R.drawable.closetbackground3))
+        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "pant", R.drawable.closetbackground2))
+        closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "glass", R.drawable.closetbackground4))
 
         //어댑터 연결
         val adapter = ClosetAdapter(closetItemList, requireContext())
@@ -45,6 +43,7 @@ class ClosetFragment : Fragment() {
         binding.closetGv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             // MainActivity의 바인딩된 ImageView에 선택된 이미지를 설정합니다.
             binding.closetAvatar.setImageResource(closetItemList[position].avatar_img)
+            binding.closetBackground.setBackgroundResource(closetItemList[position].background_img)
             Log.d(closetItemList[position].name, "item")
         }
 

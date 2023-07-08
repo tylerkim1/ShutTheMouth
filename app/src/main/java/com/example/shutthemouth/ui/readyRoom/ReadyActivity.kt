@@ -23,7 +23,7 @@ class ReadyActivity : AppCompatActivity() {
         setContentView(view)
 
         // Intent를 통해 받은 userList를 사용하여 UI 업데이트
-        val userList = intent.getSerializableExtra("selectedUserList") as List<User>
+        val userList = intent.getSerializableExtra("selectedUserList") as ArrayList<User>? ?: arrayListOf()
         val adapter = ReadyAdapter(userList as ArrayList<User>, this)
         binding.readyGv.adapter = adapter
 

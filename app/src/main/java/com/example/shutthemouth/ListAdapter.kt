@@ -15,7 +15,6 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.MyView>() {
             binding.text03.text = userList[pos].name
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyView {
         val view = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyView(view)

@@ -1,7 +1,9 @@
 package com.example.shutthemouth
 
-public class User (
-    var id : Int,
+import java.io.Serializable
+
+data class User (
+    var userId : Int,
     var key : String,
     var name : String,
     var avatar : Int,
@@ -9,4 +11,4 @@ public class User (
     var isAlive : Boolean,
     var banWord : ArrayList<String>,
     var currentRoom : Int,
-)
+): Serializable

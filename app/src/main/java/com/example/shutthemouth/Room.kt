@@ -1,9 +1,11 @@
 package com.example.shutthemouth
 
 data class Room(
-    val roomId: Int,
-    val roomTitle: String,
-    val roomMode: String,
-    val roomCurPpl: Int,
-    val roomMaxPpl: Int,
+    var roomId: Int,
+    var users : ArrayList<User>,
+    var roomTitle: String,
+    var roomMode: String,
+    var roomMinPpl: Int,
+    var roomMaxPpl: Int,
+    var isStart: Boolean
     )

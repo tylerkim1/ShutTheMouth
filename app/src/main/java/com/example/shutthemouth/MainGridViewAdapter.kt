@@ -12,7 +12,7 @@ import android.widget.TextView
 internal class MainGridViewAdapter(
     // on below line we are creating two
     // variables for course list and context
-    private val courseList: List<Room>,
+    private val roomList: List<Room>,
     private val context: Context
 ) :
     BaseAdapter() {
@@ -22,7 +22,7 @@ internal class MainGridViewAdapter(
 
     // below method is use to return the count of course list
     override fun getCount(): Int {
-        return courseList.size
+        return roomList.size
     }
 
     // below function is use to return the item of grid view.
@@ -51,7 +51,7 @@ internal class MainGridViewAdapter(
             // which we have to inflate for each item of grid view.
             convertView = layoutInflater!!.inflate(R.layout.room_card, null)
         }
-        val room = courseList[position]
+        val room = roomList[position]
 
         val roomIdTextView: TextView = convertView!!.findViewById(R.id.main_roomId)
         roomIdTextView.text = room.roomId.toString()
@@ -63,7 +63,7 @@ internal class MainGridViewAdapter(
         roomModeTextView.text = room.roomMode
 
         val roomCurPplTextView: TextView = convertView.findViewById(R.id.main_roomCurPpl)
-        roomCurPplTextView.text = room.roomCurPpl.toString()
+        roomCurPplTextView.text = room.users.size.toString()
 
         val roomMaxPplTextView: TextView = convertView.findViewById(R.id.main_roomMaxPpl)
         roomMaxPplTextView.text = room.roomMaxPpl.toString()

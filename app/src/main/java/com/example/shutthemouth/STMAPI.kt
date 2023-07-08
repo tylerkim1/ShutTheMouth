@@ -10,39 +10,47 @@ interface STMAPI {
     @POST("/user/add")
     fun addUser(@Body user: User): Call<Int>
 
+    @POST("/user/getMe")
+    fun getMe(@Body user: User): Call<User>
+
     @POST("/user/exist")
-    fun isUserExist(@Query("id") userId: Int): Call<Boolean>
+    fun isUserExist(@Body user: User): Call<Boolean>
 
     @POST("/user/nameExist")
-    fun isNameExist(@Query("name") name: String): Call<Boolean>
+    fun isNameExist(@Body user: User): Call<Boolean>
+    //    @POST("/user/delete/{id}")
+//    fun deleteUser(@Path("id") userId: Int): Call<Void>
+    @POST("/user/delete")
+    fun deleteUser(@Body user: User): Call<Void>
+    //    @POST("/user/avatar/{id}")
+//    fun setAvatar(@Path("id") userId: Int, @Body avatar: Int): Call<Void>
+    @POST("/user/avatar")
+    fun setAvatar(@Body user: User): Call<Void>
 
-    @DELETE("/user/delete/{id}")
-    fun deleteUser(@Path("id") userId: Int): Call<Void>
-
-    @PUT("/user/avatar/{id}")
-    fun setAvatar(@Path("id") userId: Int, @Body avatar: Int): Call<Void>
-
-    @PUT("/user/ready")
+    @POST("/user/ready")
     fun setReady(@Body user: User): Call<Void>
 
-    @PUT("/user/banwords/{id}")
-    fun setBanwords(@Path("id") userId: Int, @Body banwords: ArrayList<String>): Call<Void>
+    @POST("/user/banwords")
+    fun setBanwords(@Body user: User): Call<Void>
 
     @POST("/room/enter")
-    fun enterRoom(@Body request: RoomEnterRequest): Call<Boolean>
+    fun enterRoom(@Body user: User): Call<Boolean>
 
-    @PUT("/room/leave")
-    fun leaveRoom(@Body request: RoomLeaveRequest): Call<Void>
+    @POST("/room/leave")
+    fun leaveRoom(@Body user: User): Call<Void>
 
-    @PUT("/user/dead/{id}")
-    fun setDead(@Path("id") userId: Int): Call<Void>
+    @POST("/user/dead")
+    fun setDead(@Body user: User): Call<Void>
 
-    @PUT("/room/add")
+    @POST("/room/add")
     fun addRoom(@Body room: Room): Call<Void>
 
     @GET("/room/all")
     fun getRoomList(): Call<List<Room>>
 
-    data class RoomEnterRequest(val userId: Int, val roomId: Int)
-    data class RoomLeaveRequest(val userId: Int, val currentRoom: Int)
+    @GET("/room/getMyRoom")
+    fun getMyRoom(@Body user: User): Call<Room>
+
+//    data class RoomEnterRequest(val userId: Int, val roomId: Int)
+//    data class RoomLeaveRequest(val userId: Int, val currentRoom: Int)
 }

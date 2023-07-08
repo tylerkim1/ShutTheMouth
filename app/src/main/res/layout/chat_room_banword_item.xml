@@ -26,6 +26,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="2sp"
             android:background="@drawable/gameroom_text_non_border"
             android:textColor="@color/black"
             android:fontFamily="@font/dunggeunmo"
@@ -33,6 +36,8 @@
             app:layout_constraintTop_toTopOf="parent"
             android:paddingRight="15dp"
             android:paddingLeft="15dp"
+            android:singleLine="true"
+            android:maxLines="1"
             tools:text="금지어" />
     </androidx.cardview.widget.CardView>
 
@@ -49,6 +54,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
             android:textColor="@color/black"
             android:fontFamily="@font/dunggeunmo"
             android:background="@drawable/chat_room_text_border"
@@ -58,6 +67,8 @@
             android:paddingLeft="10dp"
             android:paddingBottom="2dp"
             android:paddingTop="2dp"
+            android:singleLine="true"
+            android:maxLines="1"
             tools:text="이름" />
     </androidx.cardview.widget.CardView>
 

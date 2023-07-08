@@ -1,7 +1,9 @@
 package com.example.shutthemouth
 
-public class User (
-    var id : Int,
+import com.example.shutthemouth.ui.GameRoom.TestUser
+
+data class User (
+    var userId : Int,
     var key : String,
     var name : String,
     var avatar : Int,
@@ -10,3 +12,12 @@ public class User (
     var banWord : ArrayList<String>,
     var currentRoom : Int,
 )
+
+fun checkBanWord(word: String, user: User) : Boolean {
+    for(i in user.banWord) {
+        if (word.contains(i)) {
+            return true
+        }
+    }
+    return false
+}

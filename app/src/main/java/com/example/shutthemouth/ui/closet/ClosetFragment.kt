@@ -24,10 +24,6 @@ class ClosetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(ReadyRoomViewModel::class.java)
-
-
         binding = FragmentClosetBinding.inflate(inflater, container, false)
         val root: View = binding.root
 

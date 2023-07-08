@@ -1,14 +1,12 @@
 package com.example.shutthemouth.ui.closet
 
-
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.example.shutthemouth.databinding.GvReadyItemBinding
-import com.example.shutthemouth.ui.readyRoom.User
-
+import com.example.shutthemouth.User
 
 class ReadyAdapter(items: ArrayList<User>, context: Context) :
     BaseAdapter() {
@@ -43,9 +41,8 @@ class ReadyAdapter(items: ArrayList<User>, context: Context) :
 
         val user = userList[position]
         // 데이터를 뷰에 바인딩합니다.
-        binding.gvReadyItem.setImageResource(user.img)
+        binding.gvReadyItem.setImageResource(user.avatar)
         //binding.gvReadyItemName.text = user.name
-
 
         return view
     }

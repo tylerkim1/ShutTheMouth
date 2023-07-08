@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,7 +58,7 @@ class GameRoomActivity : AppCompatActivity() {
     private var timerTextView : TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         // set dummy name
-        PreferenceUtil(this).setString("name","반갑넙죽")
+        PreferenceUtil(this).setString("name","younbae")
         PreferenceUtil(this).setString("avatar","avatar1")
         PreferenceUtil(this).setBoolean("isAlive",true)
         val testArray = ArrayList<String>()
@@ -65,6 +67,7 @@ class GameRoomActivity : AppCompatActivity() {
 
         mSocket = SocketApplication.get()
         mSocket.connect()
+        mSocket.on("connection",onNewUser)
         mSocket.on("getMessage", onMessage)
 
 
@@ -105,8 +108,8 @@ class GameRoomActivity : AppCompatActivity() {
         val chatEditText = findViewById<EditText>(R.id.gameroom_chat_textedit)
         sendButton.setOnClickListener {
             val tempText = chatEditText.text
-            if(!tempText.equals("")) {
-                chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
+            if(!tempText.isEmpty()) {
+                // chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
                 sendChat(tempText.toString())
                 recyclerViewAdaptor.notifyDataSetChanged()
                 if(checkBanWord(tempText.toString(), myData)) {
@@ -122,7 +125,27 @@ class GameRoomActivity : AppCompatActivity() {
         }
     }
 
+    internal var onNewUser: Emitter.Listener = Emitter.Listener { args ->
+        runOnUiThread(Runnable {
+            val length = args.size
+
+            if (length == 0) {
+                return@Runnable
+            }
+            //Here i'm getting weird error..................///////run :1 and run: 0
+            var username = args[0].toString()
+            try {
+                val `object` = JSONObject(username)
+                username = `object`.getString("username")
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+
+        })
+    }
+
     var onMessage = Emitter.Listener { args ->
+        Log.d("fdf","dfdfdfdfdfd")
         val obj = JSONObject(args[0].toString())
         Thread(object : Runnable{
             override fun run() {
@@ -144,6 +167,7 @@ class GameRoomActivity : AppCompatActivity() {
 
     private fun sendChat(message: String) {
         mSocket.emit("newMessage", Gson().toJson(TestChat(myData.name, message,myData.avatar,myData.currentRoom)))
+        Log.d("log", Gson().toJson(TestChat(myData.name, message,myData.avatar,myData.currentRoom)))
     }
 
     private fun goResultView() {
@@ -203,37 +227,38 @@ class GameRoomActivity : AppCompatActivity() {
         userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
         userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
         userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
-        val call = ApiObject.getRetrofitService.getMyRoom(myData)
-        call.enqueue(object: Callback<Room> {
-            override fun onResponse(call: Call<Room>, response: Response<Room>) {
-                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-                if(response.isSuccessful) {
-                    currentRoom = response.body() ?: Room(1,userList,"","",0,0,true)
-                    userList = currentRoom.users
-                }
-            }
-
-            override fun onFailure(call: Call<Room>, t: Throwable) {
-                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-            }
-        })
+//        val call = ApiObject.getRetrofitService.getMyRoom(myData)
+//        call.enqueue(object: Callback<Room> {
+//            override fun onResponse(call: Call<Room>, response: Response<Room>) {
+//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+//                if(response.isSuccessful) {
+//                    currentRoom = response.body() ?: Room(1,userList,"","",0,0,true)
+//                    userList = currentRoom.users
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<Room>, t: Throwable) {
+//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+//            }
+//        })
 
     }
     fun getMe() {
-        val call = ApiObject.getRetrofitService.getMe(myData)
-        call.enqueue(object: Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-                if(response.isSuccessful) {
-                    myData = response.body() ?: User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
-
-                }
-            }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-            }
-        })
+        myData =  User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
+//        val call = ApiObject.getRetrofitService.getMe(myData)
+//        call.enqueue(object: Callback<User> {
+//            override fun onResponse(call: Call<User>, response: Response<User>) {
+//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+//                if(response.isSuccessful) {
+//                    myData = response.body() ?: User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
+//
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<User>, t: Throwable) {
+//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+//            }
+//        })
     }
 
     inner class GridViewAdaptor(private var context: Context? ,private var userList: ArrayList<User>) : BaseAdapter() {

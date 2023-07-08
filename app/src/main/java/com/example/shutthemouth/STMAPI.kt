@@ -13,6 +13,9 @@ interface STMAPI {
     @POST("/user/add")
     fun addUser(@Body user: User): Call<Int>
 
+    @POST("/user/getMe")
+    fun getMe(@Body user: User): Call<User>
+
     @POST("/user/exist")
     fun isUserExist(@Body user: User): Call<Boolean>
 
@@ -47,6 +50,9 @@ interface STMAPI {
 
     @GET("/room/all")
     fun getRoomList(): Call<List<Room>>
+
+    @GET("/room/getMyRoom")
+    fun getMyRoom(@Body user: User): Call<Room>
 
 //    data class RoomEnterRequest(val userId: Int, val roomId: Int)
 //    data class RoomLeaveRequest(val userId: Int, val currentRoom: Int)

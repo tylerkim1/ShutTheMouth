@@ -7,11 +7,3 @@ data class TestUser (
     val banWord: ArrayList<String>
     )
 
-fun checkBanWord(word: String, user: TestUser) : Boolean {
-    for(i in user.banWord) {
-        if (word.contains(i)) {
-            return true
-        }
-    }
-    return false
-}

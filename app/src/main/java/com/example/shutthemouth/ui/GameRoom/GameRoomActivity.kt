@@ -20,24 +20,41 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.shutthemouth.ApiObject
 import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
 import com.example.shutthemouth.ResultActivity
+import com.example.shutthemouth.Room
+import com.example.shutthemouth.User
+import com.example.shutthemouth.checkBanWord
+import com.google.gson.Gson
+import io.socket.emitter.Emitter
+import org.json.JSONObject
 import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.IllegalArgumentException
+import java.net.Socket
 
 class GameRoomActivity : AppCompatActivity() {
 
-    private var userList = ArrayList<TestUser>()
+    private var userList = ArrayList<User>()
     private val chats = ArrayList<TestChat>()
-    private lateinit var myData: TestUser
+    private lateinit var myData: User
     private var countDownTimer: CountDownTimer? = null
     private var timeRemaining: Long = 0
 
     private lateinit var gridViewAdaptor : GridViewAdaptor
     private lateinit var dialog : Dialog
 
+    private lateinit var currentRoom : Room
+    val testArray = ArrayList<String>()
+
+    lateinit var mSocket: io.socket.client.Socket
+
     private var recyclerView : RecyclerView? = null
+    private lateinit var recyclerViewAdaptor : RecyclerViewAdaptor
     private var gridView : GridView? = null
     private var timerTextView : TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,19 +62,21 @@ class GameRoomActivity : AppCompatActivity() {
         PreferenceUtil(this).setString("name","반갑넙죽")
         PreferenceUtil(this).setString("avatar","avatar1")
         PreferenceUtil(this).setBoolean("isAlive",true)
-
-
         val testArray = ArrayList<String>()
         testArray.add("aa")
-        myData = TestUser(PreferenceUtil(this).getString("name",""),PreferenceUtil(this).getString("avatar",""),PreferenceUtil(this).getBoolean("isAlive",true), testArray)
+        getMe()
+
+        mSocket = SocketApplication.get()
+        mSocket.connect()
+        mSocket.on("getMessage", onMessage)
+
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_room)
 
-        setChat()
         recyclerView = findViewById(R.id.gameroom_chat_board)
         recyclerView?.layoutManager = LinearLayoutManager(this@GameRoomActivity)
-        val recyclerViewAdaptor = RecyclerViewAdaptor(chats)
+        recyclerViewAdaptor = RecyclerViewAdaptor(chats)
         recyclerView?.adapter = recyclerViewAdaptor
 
         setUserList()
@@ -90,7 +109,8 @@ class GameRoomActivity : AppCompatActivity() {
         sendButton.setOnClickListener {
             val tempText = chatEditText.text
             if(!tempText.equals("")) {
-                chats.add(TestChat(myData.name,tempText.toString(),myData.avtar, myData.isAlive))
+                chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
+                sendChat(tempText.toString())
                 recyclerViewAdaptor.notifyDataSetChanged()
                 if(checkBanWord(tempText.toString(), myData)) {
                     Toast.makeText(this, "you died", Toast.LENGTH_SHORT).show()
@@ -105,9 +125,33 @@ class GameRoomActivity : AppCompatActivity() {
         }
     }
 
+    var onMessage = Emitter.Listener { args ->
+        val obj = JSONObject(args[0].toString())
+        Thread(object : Runnable{
+            override fun run() {
+                runOnUiThread(Runnable {
+                    kotlin.run {
+                        val msg = obj.get("chat").toString()
+                        val name = obj.get("name").toString()
+                        val avatar = obj.get("avatar") as Int
+                        val room = obj.get("room") as Int
+                        val tempChat = TestChat(name, msg, avatar, room)
+                        chats.add(tempChat)
+                        recyclerView!!.adapter?.notifyDataSetChanged()
+                        recyclerView!!.scrollToPosition(recyclerViewAdaptor.itemCount-1)
+                    }
+                })
+            }
+        }).start()
+    }
+
+    private fun sendChat(message: String) {
+        mSocket.emit("newMessage", Gson().toJson(TestChat(myData.name, message,myData.avatar,myData.currentRoom)))
+    }
+
     private fun goResultView() {
         val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra("avatar", myData.avtar)
+        intent.putExtra("avatar", myData.avatar)
         startActivity(intent)
     }
 
@@ -155,25 +199,47 @@ class GameRoomActivity : AppCompatActivity() {
         userList[1].isAlive = false
     }
 
-    private fun setChat() {
-        chats.add(TestChat("반갑넙죽", "안녕하세요dxfgbxdgbxfgxfgnxfbfgbgnzgzdgbgbfgbbzdzdbnsssssasdjhvbidfbvksd\nbvnkladbvklhadbfvkladbfkladbfvkjadbnfkbadskfvbad;kjfvnkdafbvkadfbv", "avatar2",true))
-        chats.add(TestChat("어쩔넙죽", "그런가요","avatar1",true))
-        chats.add(TestChat("저쩔넙죽", "ㅋㅋ;","avatar1",true))
-    }
-
     fun setUserList() {
-        val testArray = ArrayList<String>()
+
         testArray.add("aa")
-        userList.add(TestUser("안녕넙죽", "avatar2", true, testArray))
-        userList.add(TestUser("반갑넙죽", "avatar2", true, testArray))
-        userList.add(TestUser("어쩔넙죽", "avatar2", true, testArray))
-        userList.add(TestUser("저쩔넙죽", "avatar2", true, testArray))
-        userList.add(TestUser("MZ넙죽", "avatar1", true, testArray))
+        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
+        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
+        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
+        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
+        val call = ApiObject.getRetrofitService.getMyRoom(myData)
+        call.enqueue(object: Callback<Room> {
+            override fun onResponse(call: Call<Room>, response: Response<Room>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    currentRoom = response.body() ?: Room(1,userList,"","",0,0,true)
+                    userList = currentRoom.users
+                }
+            }
+
+            override fun onFailure(call: Call<Room>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
+    fun getMe() {
+        val call = ApiObject.getRetrofitService.getMe(myData)
+        call.enqueue(object: Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    myData = response.body() ?: User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
+
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
-    inner class GridViewAdaptor(private var context: Context? ,private var userList: ArrayList<TestUser>) : BaseAdapter() {
-
-
+    inner class GridViewAdaptor(private var context: Context? ,private var userList: ArrayList<User>) : BaseAdapter() {
         override fun getCount(): Int {
             return userList.size
         }
@@ -263,13 +329,11 @@ class GameRoomActivity : AppCompatActivity() {
             // if my chat?
             when(holder) {
                 is MessageViewHolder -> {
-                    val resID = resources.getIdentifier("@drawable/"+chats.get(position).avatar, "drawable", "com.example.shutthemouth")
-                    holder.avatarImage.setImageResource(resID)
+                    holder.avatarImage.setImageResource(chats.get(position).avatar)
                     holder.chatText.text = chats.get(position).chat
                 }
                 is MessageViewHolder2 -> {
-                    val resID = resources.getIdentifier("@drawable/"+chats.get(position).avatar, "drawable", "com.example.shutthemouth")
-                    holder.avatarImage.setImageResource(R.drawable.avatar2)
+                    holder.avatarImage.setImageResource(chats.get(position).avatar)
                     holder.chatText.text = chats.get(position).chat
                 }
                 else -> throw IllegalArgumentException("view holder")

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shutthemouth.R
 import com.example.shutthemouth.databinding.FragmentReadyBinding
-import com.example.shutthemouth.ui.readyRoom.User
+import com.example.shutthemouth.User
 
 
 class ReadyFragment : Fragment() {

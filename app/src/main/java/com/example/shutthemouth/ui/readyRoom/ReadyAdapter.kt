@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.example.shutthemouth.databinding.GvReadyItemBinding
-import com.example.shutthemouth.ui.readyRoom.User
+import com.example.shutthemouth.User
 
 
 class ReadyAdapter(items: ArrayList<User>, context: Context) :

@@ -10,9 +10,7 @@ import android.widget.GridView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.shutthemouth.MainGridViewAdapter
-import com.example.shutthemouth.MainRoom
-import com.example.shutthemouth.R
-import com.example.shutthemouth.SetnameActivity
+import com.example.shutthemouth.Room
 import com.example.shutthemouth.databinding.FragmentMainBinding
 import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 
@@ -22,7 +20,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     lateinit var roomGridView: GridView
-    lateinit var roomList: List<MainRoom>
+    lateinit var roomList: List<Room>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,13 +31,13 @@ class MainFragment : Fragment() {
         val root: View = binding.root
 
         roomGridView = binding.mainGridview
-        roomList = ArrayList<MainRoom>()
+        roomList = ArrayList<Room>()
 
-        roomList = roomList + MainRoom(1, "입닥쳐 말포이", "기본모드", 3, 8)
-        roomList = roomList + MainRoom(2, "입닥쳐 해리포터", "기본모드", 6, 8)
-        roomList = roomList + MainRoom(3, "입닥쳐 론", "기본모드", 1, 8)
-        roomList = roomList + MainRoom(4, "입닥쳐 덤블도어", "기본모드", 7, 8)
-        roomList = roomList + MainRoom(5, "입닥칠까말까 닥칠까말까 던던던던 던질까말까 던질까말까 던던전", "기본모드", 7, 8)
+        roomList = roomList + Room(1, "입닥쳐 말포이", "기본모드", 3, 8)
+        roomList = roomList + Room(2, "입닥쳐 해리포터", "기본모드", 6, 8)
+        roomList = roomList + Room(3, "입닥쳐 론", "기본모드", 1, 8)
+        roomList = roomList + Room(4, "입닥쳐 덤블도어", "기본모드", 7, 8)
+        roomList = roomList + Room(5, "입닥칠까말까 닥칠까말까 던던던던 던질까말까 던질까말까 던던전", "기본모드", 7, 8)
 
         val courseAdapter = MainGridViewAdapter(courseList = roomList, context = requireContext())
 

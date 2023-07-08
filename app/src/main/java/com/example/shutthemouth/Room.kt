@@ -1,6 +1,6 @@
 package com.example.shutthemouth
 
-data class MainRoom(
+data class Room(
     val roomId: Int,
     val roomTitle: String,
     val roomMode: String,

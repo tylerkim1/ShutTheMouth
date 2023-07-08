@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import android.widget.TextView
 
 // on below line we are creating an
@@ -13,7 +12,7 @@ import android.widget.TextView
 internal class MainGridViewAdapter(
     // on below line we are creating two
     // variables for course list and context
-    private val courseList: List<MainRoom>,
+    private val courseList: List<Room>,
     private val context: Context
 ) :
     BaseAdapter() {

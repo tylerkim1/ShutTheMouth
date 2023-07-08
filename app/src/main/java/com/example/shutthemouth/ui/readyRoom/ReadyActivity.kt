@@ -1,11 +1,14 @@
 package com.example.shutthemouth.ui.readyRoom
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.example.shutthemouth.MainActivity
 import com.example.shutthemouth.R
 import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ActivityReadyBinding
+import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 import com.example.shutthemouth.ui.closet.ReadyAdapter
 
 class ReadyActivity : AppCompatActivity() {
@@ -30,5 +33,11 @@ class ReadyActivity : AppCompatActivity() {
             ready_state = !ready_state
             if(ready_state) binding.readyBtn.setBackgroundResource(R.drawable.ready_btn) else binding.readyBtn.setBackgroundResource(R.drawable.unready_btn)
         }
+
+        binding.readyTempbtn.setOnClickListener {
+            val intent = Intent(this, GameRoomActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }

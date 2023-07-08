@@ -80,7 +80,6 @@ class MainFragment : Fragment() {
         val userList = arrayListOf<User>()
         val testArray = ArrayList<String>()
         testArray.add("aa")
-
         //유저 추가
         userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
         userList.add(User(2,"ab","younba", R.drawable.avatar1,true,true,testArray,1))
@@ -88,8 +87,14 @@ class MainFragment : Fragment() {
         userList.add(User(4,"b","youn", R.drawable.avatar2,true,true,testArray,1))
         userList.add(User(5,"a","you", R.drawable.avatar1,true,true,testArray,1))
 
+        val userList2 = arrayListOf<User>()
+        userList2.add(User(6,"abc","younbae", R.drawable.avatar1,true,true,testArray,2))
+        userList2.add(User(7,"ab","younba", R.drawable.avatar1,true,true,testArray,2))
+        userList2.add(User(8,"c","younb", R.drawable.avatar1,true,true,testArray,2))
+        userList2.add(User(9,"b","youn", R.drawable.avatar1,true,true,testArray,2))
+
         roomList = roomList + Room(1, userList,"입닥쳐 말포이", "기본모드", 3, 8, false)
-        roomList = roomList + Room(2, userList,"입닥쳐 해리포터", "기본모드", 6, 8, false)
+        roomList = roomList + Room(2, userList2,"입닥쳐 해리포터", "기본모드", 6, 8, false)
         roomList = roomList + Room(3, userList,"입닥쳐 론", "기본모드", 1, 8, false)
         roomList = roomList + Room(4, userList,"입닥쳐 덤블도어", "기본모드", 7, 8, true)
         roomList = roomList + Room(5, userList,"입닥칠까말까 닥칠까말까 던던던던 던질까말까 던질까말까 던던전", "기본모드", 3, 8, false)

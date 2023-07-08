@@ -3,7 +3,6 @@ package com.example.shutthemouth.ui.GameRoom
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -32,12 +31,10 @@ import com.google.gson.Gson
 import io.socket.emitter.Emitter
 import org.json.JSONException
 import org.json.JSONObject
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.IllegalArgumentException
-import java.net.Socket
 
 class GameRoomActivity : AppCompatActivity() {
 

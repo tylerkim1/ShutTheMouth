@@ -28,6 +28,10 @@ class SetnameActivity : AppCompatActivity() {
                 banWord = ArrayList<String>(),
                 currentRoom = 0
             )
+            PreferenceUtil(this).setInt("userId",1)
+            PreferenceUtil(this).setString("key","temp")
+            PreferenceUtil(this).setString("name",userName)
+            PreferenceUtil(this).setInt("avatar", R.drawable.nubzuki)
 
             // MainActivity로 전환
             val intent = Intent(this, MainActivity::class.java)

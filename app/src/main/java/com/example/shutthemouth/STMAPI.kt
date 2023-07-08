@@ -37,7 +37,7 @@ interface STMAPI {
     fun setBanwords(@Body user: User): Call<Void>
 
     @POST("/room/enter")
-    fun enterRoom(@Body user: User): Call<Boolean>
+    fun enterRoom(@Body request: EnterRoomRequest): Call<Boolean>
 
     @POST("/room/leave")
     fun leaveRoom(@Body user: User): Call<Void>
@@ -53,6 +53,11 @@ interface STMAPI {
 
     @GET("/room/getMyRoom")
     fun getMyRoom(@Body user: User): Call<Room>
+
+    data class EnterRoomRequest(
+        val user: User,
+        val roomId: Int
+    )
 
 //    data class RoomEnterRequest(val userId: Int, val roomId: Int)
 //    data class RoomLeaveRequest(val userId: Int, val currentRoom: Int)

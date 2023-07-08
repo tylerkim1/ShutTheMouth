@@ -65,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
             handleSignInResult(task)
         }
     }
-
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
@@ -79,5 +78,4 @@ class LoginActivity : AppCompatActivity() {
             binding.loginText.visibility = View.GONE
         }
     }
-
 }

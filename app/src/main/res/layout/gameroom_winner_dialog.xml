@@ -1,0 +1,93 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/winner_back"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/gameroom_winner_image"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/gameroom_winner_winner"
+        android:scaleType="fitStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="30dp"
+        android:visibility="invisible"
+        />
+
+    <ImageView
+        android:id="@+id/gameroom_winner2_image"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/gameroom_winner_winner"
+        android:scaleType="fitStart"
+        app:layout_constraintTop_toBottomOf="@id/gameroom_winner_image"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="-20dp"
+        android:layout_marginStart="30dp"
+        android:visibility="invisible"
+        />
+
+    <ImageView
+        android:id="@+id/gameroom_chicken_image"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/gameroom_winner_chicken"
+        android:scaleType="fitStart"
+        app:layout_constraintTop_toBottomOf="@id/gameroom_winner2_image"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="-20dp"
+        android:layout_marginStart="30dp"
+        android:visibility="invisible"
+        />
+
+    <ImageView
+        android:id="@+id/gameroom_dinner_image"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/gameroom_winner_dinner"
+        android:scaleType="fitStart"
+        app:layout_constraintTop_toBottomOf="@id/gameroom_chicken_image"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="-20dp"
+        android:layout_marginStart="30dp"
+        android:visibility="invisible"
+        />
+
+    <ImageView
+        android:id="@+id/gameroom_avatar_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/gameroom_circle_background"
+        android:src="@drawable/avatar2"
+        android:scaleType="fitStart"
+        app:layout_constraintTop_toBottomOf="@id/gameroom_dinner_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="15dp"
+        android:paddingTop="5dp"
+        />
+
+    <!-- 추가적인 다이얼로그 컨텐츠를 정의 -->
+
+    <Button
+        android:id="@+id/winner_closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gameroom_exit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gameroom_avatar_image"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="10dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

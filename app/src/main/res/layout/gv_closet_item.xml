@@ -13,10 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:layout_constraintDimensionRatio="1:1"
         android:focusableInTouchMode="false"
         android:focusable="false"
+        android:background="@drawable/closet_item_back"
+        android:padding="30dp"
         tools:src="@tools:sample/avatars" />
 
 </LinearLayout>

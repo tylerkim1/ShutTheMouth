@@ -3,10 +3,9 @@ package com.example.shutthemouth.ui.GameRoom
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shutthemouth.ApiObject
@@ -30,14 +30,10 @@ import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
-import org.json.JSONException
 import org.json.JSONObject
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.IllegalArgumentException
-import java.net.Socket
 
 class GameRoomActivity : AppCompatActivity() {
 
@@ -46,6 +42,7 @@ class GameRoomActivity : AppCompatActivity() {
     private lateinit var myData: User
     private var countDownTimer: CountDownTimer? = null
     private var timeRemaining: Long = 0
+    private var deadCount: Int = 0
 
     private lateinit var gridViewAdaptor : GridViewAdaptor
     private lateinit var dialog : Dialog
@@ -55,23 +52,27 @@ class GameRoomActivity : AppCompatActivity() {
 
     lateinit var mSocket: io.socket.client.Socket
 
+    var resultString = ""
+
     private var recyclerView : RecyclerView? = null
     private lateinit var recyclerViewAdaptor : RecyclerViewAdaptor
     private var gridView : GridView? = null
     private var timerTextView : TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         // set dummy name
-        PreferenceUtil(this).setString("name","younbae")
+        PreferenceUtil(this).setString("name","younbae1")
         PreferenceUtil(this).setString("avatar","avatar1")
         PreferenceUtil(this).setBoolean("isAlive",true)
-        val testArray = ArrayList<String>()
-        testArray.add("aa")
+//        val testArray = ArrayList<String>()
+//        testArray.add("aa")
         getMe()
+        testAdd()
 
         mSocket = SocketApplication.get()
         mSocket.connect()
-        mSocket.on("connection",onNewUser)
+        mSocket.emit("enter", Gson().toJson(myData))
         mSocket.on("getMessage", onMessage)
+        mSocket.on("someoneDead", onDeadMessage)
 
 
         super.onCreate(savedInstanceState)
@@ -82,7 +83,7 @@ class GameRoomActivity : AppCompatActivity() {
         recyclerViewAdaptor = RecyclerViewAdaptor(chats)
         recyclerView?.adapter = recyclerViewAdaptor
 
-        setUserList()
+        // setUserList()
         gridView = findViewById(R.id.gameroom_grid)
         gridViewAdaptor = GridViewAdaptor(this, userList)
         gridView?.adapter = gridViewAdaptor
@@ -97,7 +98,10 @@ class GameRoomActivity : AppCompatActivity() {
         val exitButton = findViewById<Button>(R.id.gameroom_exit_button)
         exitButton.setOnClickListener {
             // 결과 창으로 이동
+            mSocket.emit("left", Gson().toJson(myData))
+            mSocket.disconnect()
             goResultView()
+            // checkAmIWinner()
         }
 
         val closeButton = dialog.findViewById<Button>(R.id.closeButton)
@@ -111,16 +115,12 @@ class GameRoomActivity : AppCompatActivity() {
         val chatEditText = findViewById<EditText>(R.id.gameroom_chat_textedit)
         sendButton.setOnClickListener {
             val tempText = chatEditText.text
-            if(!tempText.isEmpty()) {
+            if(!tempText.isEmpty() && myData.isAlive) {
                 // chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
                 sendChat(tempText.toString())
                 recyclerViewAdaptor.notifyDataSetChanged()
                 if(checkBanWord(tempText.toString(), myData)) {
-                    Toast.makeText(this, "you died", Toast.LENGTH_SHORT).show()
-                    PreferenceUtil(this).setBoolean("isAlive", false)
-                    updateUser()
-                    gridViewAdaptor.notifyDataSetChanged()
-                    dialog.show()
+                    die()
                 }
                 resetTimer()
                 chatEditText.setText("")
@@ -128,24 +128,82 @@ class GameRoomActivity : AppCompatActivity() {
         }
     }
 
-    internal var onNewUser: Emitter.Listener = Emitter.Listener { args ->
-        runOnUiThread(Runnable {
-            val length = args.size
-
-            if (length == 0) {
-                return@Runnable
+    var onDeadMessage = Emitter.Listener { args ->
+        Log.d("fdf","dfdfdfdfdfd")
+        val obj = JSONObject(args[0].toString())
+        Thread(object : Runnable{
+            override fun run() {
+                runOnUiThread(Runnable {
+                    kotlin.run {
+                        val msg = obj.get("userId") as Int
+                        val myIndex = userList.indexOfFirst { it.userId == msg }
+                        userList[myIndex].isAlive = false
+                        resultString = resultString + "\n#${userList.size-deadCount} ${msg}"
+                        deadCount++
+                        gridViewAdaptor.notifyDataSetChanged()
+                        checkAmIWinner()
+                    }
+                })
             }
-            //Here i'm getting weird error..................///////run :1 and run: 0
-            var username = args[0].toString()
-            try {
-                val `object` = JSONObject(username)
-                username = `object`.getString("username")
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-
-        })
+        }).start()
     }
+
+    fun checkAmIWinner() {
+        if(true) { //deadCount+1 == userList.size
+            stopTimer()
+            //이긴 다이얼로그 띄우기
+            val winner_dialog = Dialog(this)
+            winner_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            winner_dialog.setCancelable(true)
+            winner_dialog.setContentView(R.layout.gameroom_winner_dialog)
+
+            val closeButton = winner_dialog.findViewById<Button>(R.id.winner_closeButton)
+
+            val imageView1 = winner_dialog.findViewById<ImageView>(R.id.gameroom_winner_image)
+            val imageView2 = winner_dialog.findViewById<ImageView>(R.id.gameroom_winner2_image)
+            val imageView3 = winner_dialog.findViewById<ImageView>(R.id.gameroom_chicken_image)
+            val imageView4 = winner_dialog.findViewById<ImageView>(R.id.gameroom_dinner_image)
+            val imageViews = listOf(imageView1, imageView2, imageView3, imageView4)
+            var currentImageIndex = 0
+
+            winner_dialog.setOnShowListener {
+                val handler = Handler()
+                val runnable = object : Runnable {
+                    override fun run() {
+                        if (currentImageIndex < imageViews.size) {
+                            imageViews[currentImageIndex].visibility = View.VISIBLE // 현재 인덱스의 이미지뷰를 보이도록 설정
+                            currentImageIndex++
+                            handler.postDelayed(this, 1000) // 1초 간격으로 실행
+                        }
+                    }
+                }
+                handler.postDelayed(runnable,1000)
+            }
+
+            closeButton.setOnClickListener {
+                winner_dialog.dismiss()
+                goResultView()
+            }
+
+            resultString = resultString + "#1 " + myData.name
+
+            winner_dialog.show()
+            //게임 끝났다는 신호 보내기
+        }
+    }
+
+    private fun die() {
+        Toast.makeText(this, "you died", Toast.LENGTH_SHORT).show()
+        PreferenceUtil(this).setBoolean("isAlive", false)
+        myData.isAlive = false
+        updateUser()
+        resultString = resultString + "\n#${userList.size-deadCount} ${myData.name}"
+        deadCount++
+        gridViewAdaptor.notifyDataSetChanged()
+        dialog.show()
+        stopTimer()
+    }
+
 
     var onMessage = Emitter.Listener { args ->
         Log.d("fdf","dfdfdfdfdfd")
@@ -170,12 +228,12 @@ class GameRoomActivity : AppCompatActivity() {
 
     private fun sendChat(message: String) {
         mSocket.emit("newMessage", Gson().toJson(TestChat(myData.name, message,myData.avatar,myData.currentRoom)))
-        Log.d("log", Gson().toJson(TestChat(myData.name, message,myData.avatar,myData.currentRoom)))
     }
 
     private fun goResultView() {
         val intent = Intent(this, ResultActivity::class.java)
         intent.putExtra("avatar", myData.avatar)
+        intent.putExtra("result", resultString)
         startActivity(intent)
     }
 
@@ -192,11 +250,7 @@ class GameRoomActivity : AppCompatActivity() {
             override fun onFinish() {
                 timeRemaining = 0
                 updateTimerText()
-                Toast.makeText(this@GameRoomActivity, "you died", Toast.LENGTH_SHORT).show()
-                PreferenceUtil(this@GameRoomActivity).setBoolean("isAlive", false)
-                updateUser()
-                gridViewAdaptor.notifyDataSetChanged()
-                dialog.show()
+                die()
             }
         }.start()
     }
@@ -220,7 +274,9 @@ class GameRoomActivity : AppCompatActivity() {
 
     private fun updateUser() {
         // 나중에 서버에서 리스트 변화시 여기다가 받아올듯
-        userList[1].isAlive = false
+        val myIndex = userList.indexOfFirst { it.name == myData.name }
+        userList[myIndex].isAlive = false
+        mSocket.emit("dead", Gson().toJson(myData))
     }
 
     fun setUserList() {
@@ -246,8 +302,50 @@ class GameRoomActivity : AppCompatActivity() {
 //        })
 
     }
+
+    fun testAdd() {
+        testArray.add("aa")
+        userList.add(User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1))
+        userList.add(User(2,"abc2","younbae2", R.drawable.avatar2,true,true,testArray,1))
+        userList.add(User(3,"abc3","younbae3", R.drawable.avatar2,true,true,testArray,1))
+        userList.add(User(4,"abc4","younbae4", R.drawable.avatar2,true,true,testArray,1))
+        for(i in userList) {
+            val data = mapOf("user" to i)
+            val call = ApiObject.getRetrofitService.addUser(data)
+            call.enqueue(object: Callback<Int> {
+                override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                    Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                    if(response.isSuccessful) {
+                        val resultInt = response.body() ?: 0
+                        Log.d("success", resultInt.toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<Int>, t: Throwable) {
+                    Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+
+        val roomTemp = Room(1,userList,"abc","default",2,3,true)
+
+        val call = ApiObject.getRetrofitService.addRoom(roomTemp)
+        call.enqueue(object: Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    Log.d("success", "roomadded")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
     fun getMe() {
-        myData =  User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
+        myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
 //        val call = ApiObject.getRetrofitService.getMe(myData)
 //        call.enqueue(object: Callback<User> {
 //            override fun onResponse(call: Call<User>, response: Response<User>) {

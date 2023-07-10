@@ -11,7 +11,7 @@ interface STMAPI {
     fun getUser(@Body user: User): Call<User>
 
     @POST("/user/add")
-    fun addUser(@Body user: User): Call<Int>
+    fun addUser(@Body user: Map<String,User>): Call<Int>
 
     @POST("/user/getMe")
     fun getMe(@Body user: User): Call<User>

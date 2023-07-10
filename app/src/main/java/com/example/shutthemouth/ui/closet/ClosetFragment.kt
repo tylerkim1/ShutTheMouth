@@ -30,21 +30,22 @@ class ClosetFragment : Fragment() {
 
 
         binding.closetAvatar.setImageResource(R.drawable.nubzuki)
+        binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
 
         //옷장 아이템 추가
         val closetItemList = arrayListOf<ClosetItem>()
-        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuk_sunglass, "sunglass"))
-        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "pant"))
-        closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "glass"))
+        closetItemList.add(ClosetItem(R.drawable.gameroom_died, R.drawable.nubzuki, "default",R.drawable.closet_back_kaist))
+        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuk_sunglass, "sunglass",R.drawable.closet_back_ufo))
+        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "pant",R.drawable.closet_back_mun))
+        closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "glass",R.drawable.closet_back_club))
 
 
-
-        //어댑터 연결
         val adapter = ClosetAdapter(closetItemList, requireContext())
         binding.closetGv.setAdapter(adapter)
         binding.closetGv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             // MainActivity의 바인딩된 ImageView에 선택된 이미지를 설정합니다.
             binding.closetAvatar.setImageResource(closetItemList[position].avatar_img)
+            binding.closetBack.setImageResource(closetItemList[position].back)
             Log.d(closetItemList[position].name, "item")
         }
 

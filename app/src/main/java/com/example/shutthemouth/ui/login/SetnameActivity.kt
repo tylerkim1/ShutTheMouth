@@ -59,6 +59,7 @@ class SetnameActivity : AppCompatActivity() {
                                     PreferenceUtil(this@SetnameActivity).setInt("avatar", R.drawable.nubzuki)
 
                                     // MainActivity로 전환
+                                    Log.d("result", response.body().toString())
                                     val intent = Intent(this@SetnameActivity, MainActivity::class.java)
                                     intent.putExtra("user", user)
                                     startActivity(intent)

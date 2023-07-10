@@ -11,7 +11,7 @@ interface STMAPI {
     fun getUser(@Body user: User): Call<User>
 
     @POST("/user/add")
-    fun addUser(@Body user: Map<String,User>): Call<Int>
+    fun addUser(@Body user: Map<String, User>): Call<Int>
 
     @POST("/user/getMe")
     fun getMe(@Body user: Map<String,User>): Call<User>
@@ -20,13 +20,11 @@ interface STMAPI {
     fun isUserExist(@Body user: User): Call<Boolean>
 
     @POST("/user/nameExist")
-    fun isNameExist(@Body user: User): Call<Boolean>
-//    @POST("/user/delete/{id}")
-//    fun deleteUser(@Path("id") userId: Int): Call<Void>
+    fun isNameExist(@Body user: Map<String, User>): Call<Boolean>
+
     @POST("/user/delete")
     fun deleteUser(@Body user: User): Call<Void>
-//    @POST("/user/avatar/{id}")
-//    fun setAvatar(@Path("id") userId: Int, @Body avatar: Int): Call<Void>
+
     @POST("/user/avatar")
     fun setAvatar(@Body user: User): Call<Void>
 
@@ -34,10 +32,10 @@ interface STMAPI {
     fun setReady(@Body user: User): Call<Void>
 
     @POST("/user/banwords")
-    fun setBanwords(@Body user: User): Call<Void>
+    fun setBanwords(@Body user: Map<String, User>): Call<Void>
 
     @POST("/room/enter")
-    fun enterRoom(@Body user: User): Call<Boolean>
+    fun enterRoom(@Body request: EnterRoomRequest): Call<Boolean>
 
     @POST("/room/leave")
     fun leaveRoom(@Body user: User): Call<Void>
@@ -54,6 +52,8 @@ interface STMAPI {
     @POST("/room/getMyRoom")
     fun getMyRoom(@Body user: Map<String,User>): Call<Room>
 
-//    data class RoomEnterRequest(val userId: Int, val roomId: Int)
-//    data class RoomLeaveRequest(val userId: Int, val currentRoom: Int)
+    data class EnterRoomRequest(
+        val user: User,
+        val roomId: Int
+    )
 }

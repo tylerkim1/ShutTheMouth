@@ -1,10 +1,12 @@
 package com.example.shutthemouth.ui.closet
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import com.example.shutthemouth.R
 import com.example.shutthemouth.databinding.GvReadyItemBinding
 import com.example.shutthemouth.User
 
@@ -41,10 +43,21 @@ class ReadyAdapter(items: ArrayList<User>, context: Context) :
 
         val user = userList[position]
         // 데이터를 뷰에 바인딩합니다.
-        binding.gvReadyItem.setImageResource(user.avatar)
+        // binding.gvReadyItem.setImageResource(user.avatar)
+        binding.gvReadyItem.setImageResource(R.drawable.avatar2)
+        if(user.isReady) {
+            binding.readyroomReadySign.visibility = View.VISIBLE
+        } else {
+            binding.readyroomReadySign.visibility = View.INVISIBLE
+        }
         //binding.gvReadyItemName.text = user.name
 
         return view
+    }
+
+    override fun notifyDataSetChanged() {
+        super.notifyDataSetChanged()
+        Log.d("updated", "now")
     }
 
 }

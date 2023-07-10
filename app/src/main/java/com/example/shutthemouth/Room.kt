@@ -1,5 +1,7 @@
 package com.example.shutthemouth
 
+import java.io.Serializable
+
 data class Room(
     var roomId: Int,
     var users : ArrayList<User>,
@@ -8,4 +10,4 @@ data class Room(
     var roomMinPpl: Int,
     var roomMaxPpl: Int,
     var isStart: Boolean
-    )
+    ) : Serializable

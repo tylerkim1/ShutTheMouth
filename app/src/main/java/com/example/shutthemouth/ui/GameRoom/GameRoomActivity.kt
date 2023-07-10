@@ -216,7 +216,7 @@ class GameRoomActivity : AppCompatActivity() {
                     kotlin.run {
                         val msg = obj.get("chat").toString()
                         val name = obj.get("name").toString()
-                        val avatar = obj.get("avatar") as Int
+                        val avatar = obj.get("avatar") as String
                         val room = obj.get("room") as Int
                         val tempChat = TestChat(name, msg, avatar, room)
                         chats.add(tempChat)
@@ -301,11 +301,11 @@ class GameRoomActivity : AppCompatActivity() {
     }
 
     fun testAdd() {
-        testArray.add("aa")
-        userList.add(User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(2,"abc2","younbae2", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(3,"abc3","younbae3", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(4,"abc4","younbae4", R.drawable.avatar2,true,true,testArray,1))
+//        testArray.add("aa")
+//        userList.add(User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1))
+//        userList.add(User(2,"abc2","younbae2", R.drawable.avatar2,true,true,testArray,1))
+//        userList.add(User(3,"abc3","younbae3", R.drawable.avatar2,true,true,testArray,1))
+//        userList.add(User(4,"abc4","younbae4", R.drawable.avatar2,true,true,testArray,1))
 
 //        val roomTemp = Room(1,userList,"abc","default",2,4,true)
 //        val data = mapOf<String, Room>("room" to roomTemp)
@@ -324,26 +324,26 @@ class GameRoomActivity : AppCompatActivity() {
 //            }
 //        })
 
-        myData.userId = 1
-        val data = mapOf<String, User>("user" to myData)
-        var tempRoom = Room(10,userList,"","",0,0,true)
-
-        val call = ApiObject.getRetrofitService.getMyRoom(data)
-        call.enqueue(object: Callback<Room> {
-            override fun onResponse(call: Call<Room>, response: Response<Room>) {
-                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-                if(response.isSuccessful) {
-                    val room = response.body()
-                    Log.d("Success", "roomadded: $room")
-                    tempRoom = room?: Room(10,userList,"","",0,0,true)
-                    Log.d("result", tempRoom.roomId.toString())
-                }
-            }
-
-            override fun onFailure(call: Call<Room>, t: Throwable) {
-                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-            }
-        })
+//        myData.userId = 1
+//        val data = mapOf<String, User>("user" to myData)
+//        var tempRoom = Room(10,userList,"","",0,0,true)
+//
+//        val call = ApiObject.getRetrofitService.getMyRoom(data)
+//        call.enqueue(object: Callback<Room> {
+//            override fun onResponse(call: Call<Room>, response: Response<Room>) {
+//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+//                if(response.isSuccessful) {
+//                    val room = response.body()
+//                    Log.d("Success", "roomadded: $room")
+//                    tempRoom = room?: Room(10,userList,"","",0,0,true)
+//                    Log.d("result", tempRoom.roomId.toString())
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<Room>, t: Throwable) {
+//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+//            }
+//        })
 
 
 
@@ -356,7 +356,7 @@ class GameRoomActivity : AppCompatActivity() {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
-                    myData = response.body() ?: User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
+                    myData = response.body() ?: User(1,"abc","younbae", "avatar2",true,true,testArray,1)
                 }
             }
 
@@ -456,11 +456,15 @@ class GameRoomActivity : AppCompatActivity() {
             // if my chat?
             when(holder) {
                 is MessageViewHolder -> {
-                    holder.avatarImage.setImageResource(chats.get(position).avatar)
+                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+
+                    holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat
                 }
                 is MessageViewHolder2 -> {
-                    holder.avatarImage.setImageResource(chats.get(position).avatar)
+                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+
+                    holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat
                 }
                 else -> throw IllegalArgumentException("view holder")

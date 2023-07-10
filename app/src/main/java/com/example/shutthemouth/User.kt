@@ -7,7 +7,7 @@ data class User (
     var userId : Int = -1,
     var key : String? = null,
     var name : String = "",
-    var avatar : Int = 0,
+    var avatar : String = "avatar1",
     var isReady : Boolean = false,
     var isAlive : Boolean = false,
     var banWord : ArrayList<String> = ArrayList(),

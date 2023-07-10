@@ -55,7 +55,7 @@ class ReadyActivity : AppCompatActivity() {
 //        val receivedResult = 1
 
         // val receivedResult = intent.getStringExtra("result") as Int // 이전 화면에서 룸 정보 받아오기
-        myData = User(1, null, "younbae4", R.drawable.avatar2, false, true, ArrayList(),1)
+        myData = User(1, null, "younbae4", "avatar2", false, true, ArrayList(),1)
 
         mSocket = SocketApplication.get()
         mSocket.connect()
@@ -248,7 +248,7 @@ class ReadyActivity : AppCompatActivity() {
                     kotlin.run {
                         val userId = obj.get("userId") as Int
                         val userName = obj.get("name").toString()
-                        val avatar = obj.get("avatar") as Int
+                        val avatar = obj.get("avatar") as String
                         val tempUser = User(userId, null, userName, avatar, false, true, ArrayList(),currentRoom.roomId)
                         userList.add(tempUser)
                         adapter.notifyDataSetChanged()

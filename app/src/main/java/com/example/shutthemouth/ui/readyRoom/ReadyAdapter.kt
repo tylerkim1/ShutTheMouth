@@ -44,7 +44,8 @@ class ReadyAdapter(items: ArrayList<User>, context: Context) :
         val user = userList[position]
         // 데이터를 뷰에 바인딩합니다.
         // binding.gvReadyItem.setImageResource(user.avatar)
-        binding.gvReadyItem.setImageResource(R.drawable.avatar2)
+        val resId = view.resources.getIdentifier(user.avatar, "drawable", "com.example.shutthemouth.ui.closet")
+        binding.gvReadyItem.setImageResource(resId)
         if(user.isReady) {
             binding.readyroomReadySign.visibility = View.VISIBLE
         } else {

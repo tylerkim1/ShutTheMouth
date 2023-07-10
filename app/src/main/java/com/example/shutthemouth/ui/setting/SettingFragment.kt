@@ -41,12 +41,12 @@ class SettingFragment : Fragment() {
         val nameTextView = binding.settingName
         val logoutButton = binding.settingLogout
 
-        val userAvatar = PreferenceUtil(requireContext()).getInt("avatar", 0)
+//        val userAvatar = PreferenceUtil(requireContext()).getInt("avatar", 0)
         val userName = PreferenceUtil(requireContext()).getString("name", "")
 
-        Log.d("SettingFragment", "User Avatar: $userAvatar")
-
-        avatarImageView.setImageResource(userAvatar)
+//        Log.d("SettingFragment", "User Avatar: $userAvatar")
+//
+//        avatarImageView.setImageResource(userAvatar)
         nameTextView.text = userName
 
         logoutButton.setOnClickListener {

@@ -11,7 +11,7 @@ interface STMAPI {
     fun getUser(@Body user: User): Call<User>
 
     @POST("/user/add")
-    fun addUser(@Body user: User): Call<Int>
+    fun addUser(@Body user: Map<String, User>): Call<Int>
 
     @POST("/user/getMe")
     fun getMe(@Body user: User): Call<User>
@@ -20,13 +20,11 @@ interface STMAPI {
     fun isUserExist(@Body user: User): Call<Boolean>
 
     @POST("/user/nameExist")
-    fun isNameExist(@Body user: User): Call<Boolean>
-//    @POST("/user/delete/{id}")
-//    fun deleteUser(@Path("id") userId: Int): Call<Void>
+    fun isNameExist(@Body user: Map<String, User>): Call<Boolean>
+
     @POST("/user/delete")
     fun deleteUser(@Body user: User): Call<Void>
-//    @POST("/user/avatar/{id}")
-//    fun setAvatar(@Path("id") userId: Int, @Body avatar: Int): Call<Void>
+
     @POST("/user/avatar")
     fun setAvatar(@Body user: User): Call<Void>
 
@@ -58,7 +56,4 @@ interface STMAPI {
         val user: User,
         val roomId: Int
     )
-
-//    data class RoomEnterRequest(val userId: Int, val roomId: Int)
-//    data class RoomLeaveRequest(val userId: Int, val currentRoom: Int)
 }

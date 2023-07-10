@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.shutthemouth.ApiObject
 import com.example.shutthemouth.MainActivity
 import com.example.shutthemouth.R
+import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -16,6 +19,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 const val RC_SIGN_IN = 123
 const val TAG = "LoginActivity"
@@ -51,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
 
         if (account != null) {
-            // 이미 로그인한 사용자
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -76,17 +81,45 @@ class LoginActivity : AppCompatActivity() {
             handleSignInResult(task)
         }
     }
+
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            // Signed in successfully, navigate to SetnameActivity
-            val intent = Intent(this, SetnameActivity::class.java)
-            startActivity(intent)
-            finish()
+            // Signed in successfully
+            val user = User().apply {
+                // Adjust this line to match the fields in your User class
+                this.key = account?.id ?: ""
+                // add other fields if necessary
+            }
+
+            val call = ApiObject.getRetrofitService.isUserExist(user)
+            call.enqueue(object: Callback<Boolean> {
+                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                    if (response.isSuccessful && response.body() == true) {
+                        // User exists,
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // User does not exist,
+                        val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+
+                override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                    // Handle network failure
+                    Log.e(TAG, "Network request failed", t)
+                }
+            })
+
         } catch (e: ApiException) {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
             binding.loginSignInButton.visibility = View.VISIBLE
             binding.loginText.visibility = View.GONE
         }
     }
+
+
 }

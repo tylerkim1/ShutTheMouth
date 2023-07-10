@@ -14,7 +14,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.example.shutthemouth.MainGridViewAdapter
 import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
 import com.example.shutthemouth.Room

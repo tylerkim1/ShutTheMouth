@@ -1,4 +1,4 @@
-package com.example.shutthemouth
+package com.example.shutthemouth.ui.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.shutthemouth.MainActivity
+import com.example.shutthemouth.R
 import com.example.shutthemouth.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -48,12 +50,21 @@ class LoginActivity : AppCompatActivity() {
         val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         val account = GoogleSignIn.getLastSignedInAccount(this)
 
-        binding.loginSignInButton.visibility = View.VISIBLE
-        binding.loginText.visibility = View.GONE
-        binding.loginSignInButton.setSize(SignInButton.SIZE_STANDARD)
-        binding.loginSignInButton.setOnClickListener {
-            val signInIntent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+        if (account != null) {
+            // 이미 로그인한 사용자
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            // 아직 로그인하지 않은 사용자
+            // 로그인 버튼과 로그인 프로세스를 설정
+            binding.loginSignInButton.visibility = View.VISIBLE
+            binding.loginText.visibility = View.GONE
+            binding.loginSignInButton.setSize(SignInButton.SIZE_STANDARD)
+            binding.loginSignInButton.setOnClickListener {
+                val signInIntent = mGoogleSignInClient.signInIntent
+                startActivityForResult(signInIntent, RC_SIGN_IN)
+            }
         }
     }
 

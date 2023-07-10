@@ -1,73 +1,69 @@
 package com.example.shutthemouth.ui.setting
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.shutthemouth.ApiObject
-import com.example.shutthemouth.ListAdapter
-import com.example.shutthemouth.User
+import com.example.shutthemouth.MainActivity
+import com.example.shutthemouth.PreferenceUtil
+import com.example.shutthemouth.R
 import com.example.shutthemouth.databinding.FragmentSettingBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.shutthemouth.ui.login.LoginActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class SettingFragment : Fragment() {
 
-    private var userList = listOf<User>()
     private var _binding: FragmentSettingBinding? = null
-    lateinit var listAdapter: ListAdapter
-
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
+
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        val view = binding.root
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
 
-        listAdapter = ListAdapter()
+        val mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
 
-        binding.btn01.setOnClickListener {
-            listAdapter.setList(userList)
-            listAdapter.notifyDataSetChanged()
-        }
+        val avatarImageView = binding.settingAvatar
+        val nameTextView = binding.settingName
+        val logoutButton = binding.settingLogout
 
-        binding.recycler01.apply {
-            adapter = listAdapter
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-        }
-        initList()
+        val userAvatar = PreferenceUtil(requireContext()).getInt("avatar", 0)
+        val userName = PreferenceUtil(requireContext()).getString("name", "")
 
-        return root
-    }
+        Log.d("SettingFragment", "User Avatar: $userAvatar")
 
-    private fun initList() {
-        val call = ApiObject.getRetrofitService.getUserAll()
-        call.enqueue(object: Callback<List<User>> {
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
-                if(response.isSuccessful) {
-                    userList = response.body() ?: listOf()
-                    listAdapter.setList(userList)
+        avatarImageView.setImageResource(userAvatar)
+        nameTextView.text = userName
+
+        logoutButton.setOnClickListener {
+            mGoogleSignInClient.signOut()
+                .addOnCompleteListener(requireActivity()) {
+                    signOutFun()
                 }
-            }
+        }
 
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
-            }
-        })
+        return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun signOutFun() {
+        Toast.makeText(
+            requireContext(), "Signed Out", Toast.LENGTH_SHORT
+        ).show()
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        startActivity(intent)
     }
 }

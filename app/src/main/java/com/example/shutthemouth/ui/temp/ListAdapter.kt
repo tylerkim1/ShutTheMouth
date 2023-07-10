@@ -1,8 +1,9 @@
-package com.example.shutthemouth
+package com.example.shutthemouth.ui.temp
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ItemListBinding
 
 class ListAdapter: RecyclerView.Adapter<ListAdapter.MyView>() {

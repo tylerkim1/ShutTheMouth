@@ -1,10 +1,14 @@
-package com.example.shutthemouth
+package com.example.shutthemouth.ui.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import com.example.shutthemouth.MainActivity
+import com.example.shutthemouth.PreferenceUtil
+import com.example.shutthemouth.R
+import com.example.shutthemouth.User
 
 class SetnameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

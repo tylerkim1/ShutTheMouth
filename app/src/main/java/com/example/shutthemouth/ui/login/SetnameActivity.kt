@@ -64,8 +64,8 @@ class SetnameActivity : AppCompatActivity() {
                                     intent.putExtra("user", user)
                                     startActivity(intent)
                                 } else {
-                                    Log.d("fail", addUserCall.toString())
-                                    Toast.makeText(this@SetnameActivity, "유저 추가 실패.", Toast.LENGTH_SHORT).show()
+                                    Log.d("HTTP error code", response.code().toString())
+                                    Toast.makeText(this@SetnameActivity, "서버 에러: ${response.code()}", Toast.LENGTH_SHORT).show()
                                 }
                             }
 

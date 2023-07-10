@@ -90,6 +90,7 @@ class LoginActivity : AppCompatActivity() {
                 // Adjust this line to match the fields in your User class
                 this.key = account?.id ?: ""
                 // add other fields if necessary
+                Log.d("shibal", this.key.toString())
             }
 
             val call = ApiObject.getRetrofitService.isUserExist(user)

@@ -32,7 +32,11 @@ public class PreferenceUtil(context: Context)
     }
 
     fun getInt(key: String, defValue: Int): Int {
-        return prefs.getInt(key, defValue)
+        return try {
+            prefs.getString(key, defValue.toString())?.toInt() ?: defValue
+        } catch (e: NumberFormatException) {
+            defValue
+        }
     }
 
     fun setInt(key: String, value: Int) {

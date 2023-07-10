@@ -1,23 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.setting.SettingFragment"
-    android:orientation="vertical">
+    tools:context=".ui.setting.SettingFragment">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn01"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#9ACC84"
-        android:textSize="18sp"
-        android:text="List Load" />
+        android:layout_height="match_parent"
+        android:background="@color/setting_background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler01"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <ImageView
+            android:id="@+id/setting_avatar"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/avatar1"
+            android:layout_marginTop="10dp"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/setting_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:text="이름"
+            android:textSize="30sp"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/setting_sound_icon"/>
+
+            <SeekBar
+                android:id="@+id/setting_volumeControl"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="bottom">
+
+            <Button
+                android:id="@+id/setting_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:text="로그아웃" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

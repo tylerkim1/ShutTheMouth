@@ -12,14 +12,20 @@
         tools:layout="@layout/fragment_main" />
 
     <fragment
-        android:id="@+id/navigation_setting"
-        android:name="com.example.shutthemouth.ui.setting.SettingFragment"
+        android:id="@+id/navigation_temp"
+        android:name="com.example.shutthemouth.ui.temp.TempFragment"
         android:label="@string/title_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_temp" />
 
     <fragment
         android:id="@+id/navigation_closet"
         android:name="com.example.shutthemouth.ui.closet.ClosetFragment"
         android:label="@string/title_closet"
         tools:layout="@layout/fragment_closet" />
+
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.example.shutthemouth.ui.setting.SettingFragment"
+        android:label="@string/title_closet"
+        tools:layout="@layout/fragment_setting" />
 </navigation>

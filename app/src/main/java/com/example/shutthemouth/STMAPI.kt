@@ -14,7 +14,7 @@ interface STMAPI {
     fun addUser(@Body user: Map<String, User>): Call<Int>
 
     @POST("/user/getMe")
-    fun getMe(@Body user: User): Call<User>
+    fun getMe(@Body user: Map<String,User>): Call<User>
 
     @POST("/user/exist")
     fun isUserExist(@Body user: User): Call<Boolean>
@@ -32,7 +32,7 @@ interface STMAPI {
     fun setReady(@Body user: User): Call<Void>
 
     @POST("/user/banwords")
-    fun setBanwords(@Body user: User): Call<Void>
+    fun setBanwords(@Body user: Map<String, User>): Call<Void>
 
     @POST("/room/enter")
     fun enterRoom(@Body request: EnterRoomRequest): Call<Boolean>
@@ -44,13 +44,13 @@ interface STMAPI {
     fun setDead(@Body user: User): Call<Void>
 
     @POST("/room/add")
-    fun addRoom(@Body room: Room): Call<Void>
+    fun addRoom(@Body room: Map<String, Room>): Call<Void>
 
     @GET("/room/all")
     fun getRoomList(): Call<List<Room>>
 
-    @GET("/room/getMyRoom")
-    fun getMyRoom(@Body user: User): Call<Room>
+    @POST("/room/getMyRoom")
+    fun getMyRoom(@Body user: Map<String,User>): Call<Room>
 
     data class EnterRoomRequest(
         val user: User,

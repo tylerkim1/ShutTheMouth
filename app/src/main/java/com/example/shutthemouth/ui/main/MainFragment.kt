@@ -58,17 +58,17 @@ class MainFragment : Fragment() {
         val testArray = ArrayList<String>()
         testArray.add("aa")
         //유저 추가
-        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(2,"ab","younba", R.drawable.avatar1,true,true,testArray,1))
-        userList.add(User(3,"c","younb", R.drawable.avatar1,true,true,testArray,1))
-        userList.add(User(4,"b","youn", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(5,"a","you", R.drawable.avatar1,true,true,testArray,1))
+        userList.add(User(1,"abc","younbae", "avatar2",true,true,testArray,1))
+        userList.add(User(2,"ab","younba", "avatar2",true,true,testArray,1))
+        userList.add(User(3,"c","younb", "avatar2",true,true,testArray,1))
+        userList.add(User(4,"b","youn", "avatar2",true,true,testArray,1))
+        userList.add(User(5,"a","you", "avatar2",true,true,testArray,1))
 
         val userList2 = arrayListOf<User>()
-        userList2.add(User(6,"abc","younbae", R.drawable.avatar1,true,true,testArray,2))
-        userList2.add(User(7,"ab","younba", R.drawable.avatar1,true,true,testArray,2))
-        userList2.add(User(8,"c","younb", R.drawable.avatar1,true,true,testArray,2))
-        userList2.add(User(9,"b","youn", R.drawable.avatar1,true,true,testArray,2))
+        userList2.add(User(6,"abc","younbae", "avatar2",true,true,testArray,2))
+        userList2.add(User(7,"ab","younba", "avatar2",true,true,testArray,2))
+        userList2.add(User(8,"c","younb", "avatar2",true,true,testArray,2))
+        userList2.add(User(9,"b","youn", "avatar2",true,true,testArray,2))
 
         roomList = roomList + Room(1, userList,"입닥쳐 말포이", "기본모드", 3, 8, false)
         roomList = roomList + Room(2, userList2,"입닥쳐 해리포터", "기본모드", 6, 8, false)
@@ -145,7 +145,7 @@ class MainFragment : Fragment() {
 
                     Log.e("Avatar", "Avatar value: $avatar")
                     val mainUserList = arrayListOf<User>()
-                    mainUserList.add(User(userId, key, name, avatar, isReady, isAlive, banWord, currentRoom))
+                    mainUserList.add(User(userId, key, name, "avatar2", isReady, isAlive, banWord, currentRoom))
                     val newRoom = Room(roomId, mainUserList, roomName, roomMode, minPeople, maxPeople, false)
                     roomList = roomList + newRoom
 

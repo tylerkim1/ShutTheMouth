@@ -39,7 +39,7 @@ class ClosetFragment : Fragment() {
         closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "pant",R.drawable.closet_back_mun))
         closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "glass",R.drawable.closet_back_club))
 
-
+        //어댑터 연결
         val adapter = ClosetAdapter(closetItemList, requireContext())
         binding.closetGv.setAdapter(adapter)
         binding.closetGv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->

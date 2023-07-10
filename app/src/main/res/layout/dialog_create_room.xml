@@ -3,9 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <EditText
+        android:id="@+id/createRoom_editText"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text="Create"/>
+        android:layout_height="wrap_content"
+        android:hint="Room Name" />
+
+    <Spinner
+        android:id="@+id/createRoom_mode_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/mode_array"
+        android:layout_below="@id/createRoom_editText" />
+
+    <Spinner
+        android:id="@+id/createRoom_minPpl_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/minPpl_array"
+        android:layout_below="@id/createRoom_mode_spinner" />
+
+    <Spinner
+        android:id="@+id/createRoom_maxPpl_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/maxPpl_array"
+        android:layout_below="@id/createRoom_minPpl_spinner" />
 
 </RelativeLayout>

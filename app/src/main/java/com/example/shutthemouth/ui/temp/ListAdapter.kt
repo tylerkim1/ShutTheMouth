@@ -1,8 +1,9 @@
-package com.example.shutthemouth
+package com.example.shutthemouth.ui.temp
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ItemListBinding
 
 class ListAdapter: RecyclerView.Adapter<ListAdapter.MyView>() {
@@ -15,7 +16,6 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.MyView>() {
             binding.text03.text = userList[pos].name
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyView {
         val view = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyView(view)

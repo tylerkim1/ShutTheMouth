@@ -1,4 +1,4 @@
-package com.example.shutthemouth
+package com.example.shutthemouth.ui.main
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.example.shutthemouth.R
+import com.example.shutthemouth.Room
 
 // on below line we are creating an
 // adapter class for our grid view.

@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#CCCCCC</color>
     <color name="winner_back">#286CD3</color>
+    <color name="setting_background">#503E45</color>
 </resources>

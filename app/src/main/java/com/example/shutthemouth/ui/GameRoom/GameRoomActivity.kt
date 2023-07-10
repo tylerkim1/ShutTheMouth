@@ -137,7 +137,7 @@ class GameRoomActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as Int
+                        val msg = obj.get("userId") as String
                         val myIndex = userList.indexOfFirst { it.userId == msg }
                         userList[myIndex].isAlive = false
                         resultString = resultString + "\n#${userList.size-deadCount} ${msg}"
@@ -356,7 +356,7 @@ class GameRoomActivity : AppCompatActivity() {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
-                    myData = response.body() ?: User(1,"abc","younbae", "avatar2",true,true,testArray,1)
+                    myData = response.body() ?: User("hello","abc","younbae", "avatar2",true,true,testArray,1)
                 }
             }
 

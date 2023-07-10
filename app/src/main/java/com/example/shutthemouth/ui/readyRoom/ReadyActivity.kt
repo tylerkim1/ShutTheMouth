@@ -55,7 +55,7 @@ class ReadyActivity : AppCompatActivity() {
 //        val receivedResult = 1
 
         // val receivedResult = intent.getStringExtra("result") as Int // 이전 화면에서 룸 정보 받아오기
-        myData = User(1, null, "younbae4", "avatar2", false, true, ArrayList(),1)
+        myData = User("dsaf", null, "younbae4", "avatar2", false, true, ArrayList(),1)
 
         mSocket = SocketApplication.get()
         mSocket.connect()
@@ -179,7 +179,7 @@ class ReadyActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as Int
+                        val msg = obj.get("userId") as String
                         if(msg != myData.userId) {
                             val myIndex = userList.indexOfFirst { it.userId == msg }
                             userList[myIndex].isReady = !userList[myIndex].isReady
@@ -225,7 +225,7 @@ class ReadyActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as Int
+                        val msg = obj.get("userId") as String
                         val tempIsReady = obj.get("isReady") as Boolean
                         if(tempIsReady) {
                             readyCount--
@@ -246,7 +246,7 @@ class ReadyActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val userId = obj.get("userId") as Int
+                        val userId = obj.get("userId") as String
                         val userName = obj.get("name").toString()
                         val avatar = obj.get("avatar") as String
                         val tempUser = User(userId, null, userName, avatar, false, true, ArrayList(),currentRoom.roomId)

@@ -29,7 +29,6 @@ class ReadyActivity : AppCompatActivity() {
     private lateinit var binding : ActivityReadyBinding
     var ready_state = false
 
-
     lateinit var mSocket: io.socket.client.Socket
     lateinit var myData : User
     lateinit var currentRoom : Room

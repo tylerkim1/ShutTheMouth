@@ -4,7 +4,7 @@ import com.example.shutthemouth.ui.GameRoom.TestUser
 import java.io.Serializable
 
 data class User (
-    var userId : Int = -1,
+    var userId : String? = null,
     var key : String? = null,
     var name : String = "",
     var avatar : String = "avatar1",

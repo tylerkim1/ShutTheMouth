@@ -21,7 +21,6 @@ class SetnameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setname)
 
-
         val button: Button = findViewById(R.id.setname_button)
         val nameInput: EditText = findViewById(R.id.setname_inputName)
 
@@ -30,7 +29,7 @@ class SetnameActivity : AppCompatActivity() {
 
             val userName = nameInput.text.toString()
             val user = User(
-                userId = 1,
+                userId = "final trial",
                 key = "temp",
                 name = userName,
                 avatar = "avatar1",
@@ -49,26 +48,28 @@ class SetnameActivity : AppCompatActivity() {
                     } else {
                         // Name does not exist, add the user
                         val addUserCall = ApiObject.getRetrofitService.addUser(data)
-                        addUserCall.enqueue(object: Callback<Int> {
-                            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                        addUserCall.enqueue(object: Callback<User> {
+                            override fun onResponse(call: Call<User>, response: Response<User>) {
                                 if (response.isSuccessful) {
                                     // User added successfully, proceed with saving the user and moving to next activity
-                                    PreferenceUtil(this@SetnameActivity).setInt("userId",1)
+                                    PreferenceUtil(this@SetnameActivity).setString("userId",
+                                        response.body()?.userId!!)
                                     PreferenceUtil(this@SetnameActivity).setString("key","temp")
                                     PreferenceUtil(this@SetnameActivity).setString("name",userName)
                                     PreferenceUtil(this@SetnameActivity).setInt("avatar", R.drawable.nubzuki)
 
                                     // MainActivity로 전환
+                                    Log.d("result", response.body().toString())
                                     val intent = Intent(this@SetnameActivity, MainActivity::class.java)
                                     intent.putExtra("user", user)
                                     startActivity(intent)
                                 } else {
-                                    Log.d("fail", addUserCall.toString())
-                                    Toast.makeText(this@SetnameActivity, "유저 추가 실패.", Toast.LENGTH_SHORT).show()
+                                    Log.d("HTTP error code", response.code().toString())
+                                    Toast.makeText(this@SetnameActivity, "서버 에러: ${response.code()}", Toast.LENGTH_SHORT).show()
                                 }
                             }
 
-                            override fun onFailure(call: Call<Int>, t: Throwable) {
+                            override fun onFailure(call: Call<User>, t: Throwable) {
                                 Toast.makeText(this@SetnameActivity, "유저 추가 네트워크 오류.", Toast.LENGTH_SHORT).show()
                             }
                         })

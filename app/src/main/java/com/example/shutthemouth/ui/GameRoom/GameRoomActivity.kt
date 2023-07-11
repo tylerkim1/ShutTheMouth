@@ -132,7 +132,7 @@ class GameRoomActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as Int
+                        val msg = obj.get("userId") as String
                         val myIndex = userList.indexOfFirst { it.userId == msg }
                         userList[myIndex].isAlive = false
                         resultString = resultString + "\n#${userList.size-deadCount} ${msg}"
@@ -346,8 +346,6 @@ class GameRoomActivity : AppCompatActivity() {
     fun getMe() {
         // myData.userId = PreferenceUtil(this).getString("userId","")
         myData.key = PreferenceUtil(this).getString("key","")
-        myData.key = PreferenceUtil(this)
-
 
 //        var userId : Int = -1,
 //        var key : String? = null,

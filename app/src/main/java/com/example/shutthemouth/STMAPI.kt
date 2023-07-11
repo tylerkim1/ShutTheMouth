@@ -7,8 +7,8 @@ interface STMAPI {
     @GET("/user/all")
     fun getUserAll(): Call<List<User>>
 
-    @GET("/user/get")
-    fun getUser(@Body user: User): Call<User>
+    @POST("/user/get")
+    fun getUser(@Body user: Map<String,User>): Call<User>
 
     @POST("/user/add")
     fun addUser(@Body user: Map<String, User>): Call<User>

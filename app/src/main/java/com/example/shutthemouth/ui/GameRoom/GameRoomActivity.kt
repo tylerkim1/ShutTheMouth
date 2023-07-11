@@ -60,14 +60,9 @@ class GameRoomActivity : AppCompatActivity() {
     private var gridView : GridView? = null
     private var timerTextView : TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-        // set dummy name
-        PreferenceUtil(this).setString("name","younbae1")
-        PreferenceUtil(this).setString("avatar","avatar1")
-        PreferenceUtil(this).setBoolean("isAlive",true)
-//        val testArray = ArrayList<String>()
-//        testArray.add("aa")
+        // myData.userId = PreferenceUtil(this).getString("userId","")
+
         getMe()
-        // testAdd()
         setUserList()
 
         mSocket = SocketApplication.get()
@@ -349,21 +344,36 @@ class GameRoomActivity : AppCompatActivity() {
 
     }
     fun getMe() {
-        // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
-        val data = mapOf<String, User>("user" to myData)
-        val call = ApiObject.getRetrofitService.getMe(data)
-        call.enqueue(object: Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-                if(response.isSuccessful) {
-                    myData = response.body() ?: User("hello","abc","younbae", "avatar2",true,true,testArray,1)
-                }
-            }
+        // myData.userId = PreferenceUtil(this).getString("userId","")
+        myData.key = PreferenceUtil(this).getString("key","")
+        myData.key = PreferenceUtil(this)
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-            }
-        })
+
+//        var userId : Int = -1,
+//        var key : String? = null,
+//        var name : String = "",
+//        var avatar : String = "avatar1",
+//        var isReady : Boolean = false,
+//        var isAlive : Boolean = false,
+//        var banWord : ArrayList<String> = ArrayList(),
+//        var currentRoom : Int = -1,
+
+        // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
+//        val data = mapOf<String, User>("user" to myData)
+//        val call = ApiObject.getRetrofitService.getMe(data)
+//        call.enqueue(object: Callback<User> {
+//            override fun onResponse(call: Call<User>, response: Response<User>) {
+//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+//                if(response.isSuccessful) {
+//                    myData = response.body() ?: User(1,"abc","younbae", "avatar2",true,true,testArray,1)
+//                    PreferenceUtil(this@GameRoomActivity).setString("currentRoom", myData.currentRoom.toString())
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<User>, t: Throwable) {
+//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+//            }
+//        })
     }
 
     inner class GridViewAdaptor(private var context: Context? ,private var userList: ArrayList<User>) : BaseAdapter() {

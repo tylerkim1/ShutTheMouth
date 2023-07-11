@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.shutthemouth.ApiObject
 import com.example.shutthemouth.MainActivity
+import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
 import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ActivityLoginBinding
@@ -104,29 +105,41 @@ class LoginActivity : AppCompatActivity() {
                 val token: String = account?.idToken!!
 
                 // Use your token
-                val user = User().apply {
-                    this.key = token
-                }
-                Log.d(TAG, user.key.toString())
+                val user = User(
+                    userId = "temp",
+                    key = token,
+                    name = "temp",
+                    avatar = "avatar1",
+                    isReady = false,
+                    isAlive = false,
+                    banWord = ArrayList<String>(),
+                    currentRoom = "0"
+                )
 
-                val call = ApiObject.getRetrofitService.isUserExist(user)
-                call.enqueue(object: Callback<Boolean> {
-                    override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                        if (response.isSuccessful && response.body() == true) {
-                            // User exists,
+                val tempData = mapOf("user" to user)
+                val call = ApiObject.getRetrofitService.isUserExist(tempData)
+                call.enqueue(object: Callback<User> {
+                    override fun onResponse(call: Call<User>, response: Response<User>) {
+                        Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                        if(response.isSuccessful) {
+                            val myUser = response.body()
+                            Log.d("this user", myUser.toString())
+                            if (myUser != null) {
+                                PreferenceUtil(this@LoginActivity).setUser("myUser", myUser)
+                            }
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
                         } else {
                             // User does not exist,
                             val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
-                            intent.putExtra("userKey", user.key)
+                            intent.putExtra("userKey", token)
                             startActivity(intent)
                             finish()
                         }
                     }
 
-                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                    override fun onFailure(call: Call<User>, t: Throwable) {
                         // Handle network failure
                         Log.e(TAG, "Network request failed", t)
                     }

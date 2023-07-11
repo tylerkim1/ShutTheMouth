@@ -17,7 +17,7 @@ interface STMAPI {
     fun getMe(@Body user: Map<String,User>): Call<User>
 
     @POST("/user/exist")
-    fun isUserExist(@Body user: User): Call<Boolean>
+    fun isUserExist(@Body user: Map<String, User>): Call<User>
 
     @POST("/user/nameExist")
     fun isNameExist(@Body user: Map<String, User>): Call<Boolean>

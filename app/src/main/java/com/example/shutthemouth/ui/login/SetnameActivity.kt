@@ -30,7 +30,7 @@ class SetnameActivity : AppCompatActivity() {
 
             val userName = nameInput.text.toString()
             val user = User(
-                userId = "final trial",
+                userId = "temp",
                 key = userKey,
                 name = userName,
                 avatar = "avatar1",
@@ -52,10 +52,11 @@ class SetnameActivity : AppCompatActivity() {
                         addUserCall.enqueue(object: Callback<User> {
                             override fun onResponse(call: Call<User>, response: Response<User>) {
                                 if (response.isSuccessful && response.body() != null) {
-                                    Log.d("result", response.body().toString())
+                                    val myUser = response.body()
+                                    Log.d("result", myUser.toString())
                                     // User added successfully, proceed with saving the user and moving to next activity
                                     PreferenceUtil(this@SetnameActivity).setString("userId",
-                                        response.body()?.userId!!)
+                                        myUser?.userId!!)
                                     if (userKey != null) {
                                         PreferenceUtil(this@SetnameActivity).setString("key",userKey)
                                     }
@@ -63,15 +64,11 @@ class SetnameActivity : AppCompatActivity() {
                                     PreferenceUtil(this@SetnameActivity).setString("avatar", R.drawable.nubzuki.toString())
 
                                     // MainActivity로 전환
-                                    Log.d("result", response.body().toString())
-                                    Log.d(TAG, response.body()?.userId!!.toString())
-                                    Log.d(TAG, userKey.toString())
                                     val intent = Intent(this@SetnameActivity, MainActivity::class.java)
-                                    intent.putExtra("user", user)
                                     startActivity(intent)
                                 } else {
                                     Log.d("HTTP error code", response.code().toString())
-                                    Toast.makeText(this@SetnameActivity, "서버 에러: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@SetnameActivity, "이름을 입력해주세요!", Toast.LENGTH_SHORT).show()
                                 }
                             }
 

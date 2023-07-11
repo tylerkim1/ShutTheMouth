@@ -12,9 +12,17 @@ public class PreferenceUtil(context: Context)
 {
     private val prefs: SharedPreferences = context.getSharedPreferences("other2", 0)
 
-    fun getPref() : SharedPreferences {
-        return prefs
+    fun getUser(key: String): User? {
+        val json = prefs.getString(key, null) ?: return null
+        val gson = GsonBuilder().create()
+        return gson.fromJson(json, User::class.java)
     }
+    fun setUser(key: String, user: User) {
+        val gson = GsonBuilder().create()
+        val json = gson.toJson(user)
+        prefs.edit().putString(key, json).apply()
+    }
+
     fun getString(key: String, defValue: String): String {
         return prefs.getString(key, defValue).toString()
     }

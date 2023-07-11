@@ -29,6 +29,9 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        val myUser = PreferenceUtil(requireContext()).getUser("myUser")
+        Log.d("my User ", myUser.toString())
+
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
         val view = binding.root
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

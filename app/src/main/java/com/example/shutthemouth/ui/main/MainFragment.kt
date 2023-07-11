@@ -134,15 +134,12 @@ class MainFragment : Fragment() {
     }
 
     fun setDummyMe() {
-        val tempList = ArrayList<String>()
-        val tempUser = User("as","younbaeKey","윤배넙죽","nubzuki",false,true,tempList,"1")
-        PreferenceUtil(requireContext()).setString("userId","happyAI")
+        PreferenceUtil(requireContext()).setString("userId","64acd66eefe64216bfd463fb")
         PreferenceUtil(requireContext()).setString("key","younbaeKey")
         PreferenceUtil(requireContext()).setString("name","윤배넙죽")
         PreferenceUtil(requireContext()).setString("avatar","nubzuki")
         PreferenceUtil(requireContext()).setBoolean("isAlive",true)
         PreferenceUtil(requireContext()).setBoolean("isReady",false)
-
     }
 
     fun getRoomList() {

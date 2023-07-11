@@ -212,24 +212,23 @@ class ReadyActivity : AppCompatActivity() {
     }
 
     var onReadyMessage = Emitter.Listener { args ->
-        val obj = JSONObject(args[0].toString())
+        val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as String
-                        if(msg != myData.userId) {
-                            val myIndex = userList.indexOfFirst { it.userId == msg }
-                            userList[myIndex].isReady = !userList[myIndex].isReady
-                            if(userList[myIndex].isReady) {
-                                readyCount++
-                                checkAllReady()
-                            } else {
-                                readyCount--
-                            }
-                            adapter.notifyDataSetChanged()
+                        val userId = obj.userId
+                        val myIndex = userList.indexOfFirst { it.userId == userId }
+                        userList[myIndex].isReady = !userList[myIndex].isReady
+                        if(userList[myIndex].isReady) {
+                            readyCount++
                             checkAllReady()
+                        } else {
+                            readyCount--
                         }
+                        adapter.notifyDataSetChanged()
+                        checkAllReady()
                     }
                 })
             }
@@ -237,7 +236,8 @@ class ReadyActivity : AppCompatActivity() {
     }
 
     var onSubmitMessage = Emitter.Listener { args ->
-        val obj = JSONObject(args[0].toString())
+        val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
@@ -257,18 +257,18 @@ class ReadyActivity : AppCompatActivity() {
     }
 
     var onLeaveMessage = Emitter.Listener { args ->
-        Log.d("fdf","dfdfdfdfdfd")
-        val obj = JSONObject(args[0].toString())
+        val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as String
-                        val tempIsReady = obj.get("isReady") as Boolean
+                        val userId = obj.userId
+                        val myIndex = userList.indexOfFirst { it.userId == userId }
+                        val tempIsReady = obj.isReady as Boolean
                         if(tempIsReady) {
                             readyCount--
                         }
-                        val myIndex = userList.indexOfFirst { it.userId == msg }
                         userList.removeAt(myIndex)
                         adapter.notifyDataSetChanged()
                     }
@@ -278,17 +278,13 @@ class ReadyActivity : AppCompatActivity() {
     }
 
     var onEnterMessage = Emitter.Listener { args ->
-        Log.d("fdf","dfdfdfdfdfd")
-        val obj = JSONObject(args[0].toString())
+        val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val userId = obj.get("userId") as String
-                        val userName = obj.get("name").toString()
-                        val avatar = obj.get("avatar") as String
-                        val tempUser = User(userId, null, userName, avatar, false, true, ArrayList(),currentRoom.roomId)
-                        userList.add(tempUser)
+                        userList.add(obj)
                         adapter.notifyDataSetChanged()
                     }
                 })

@@ -126,16 +126,16 @@ class GameRoomActivity : AppCompatActivity() {
     }
 
     var onDeadMessage = Emitter.Listener { args ->
-        Log.d("fdf","dfdfdfdfdfd")
-        val obj = JSONObject(args[0].toString())
+        val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as String
-                        val myIndex = userList.indexOfFirst { it.userId == msg }
+                        val userId = obj.userId
+                        val myIndex = userList.indexOfFirst { it.userId == userId }
                         userList[myIndex].isAlive = false
-                        resultString = resultString + "\n#${userList.size-deadCount} ${msg}"
+                        resultString = resultString + "\n#${userList.size-deadCount} ${userId}"
                         deadCount++
                         gridViewAdaptor.notifyDataSetChanged()
                         checkAmIWinner()
@@ -204,27 +204,6 @@ class GameRoomActivity : AppCompatActivity() {
 
 
     var onMessage = Emitter.Listener { args ->
-
-//        val json = args[0] as String // JSON 문자열
-//        val obj = JSONObject(json)
-//        val obj = args[0] as JSONObject
-//        Thread(object : Runnable{
-//            override fun run() {
-//                runOnUiThread(Runnable {
-//                    kotlin.run {
-//                        val msg = obj.get("chat").toString()
-//                        val name = obj.get("name").toString()
-//                        val avatar = obj.get("avatar").toString()
-//                        val room = obj.get("room").toString()
-//                        val tempChat = TestChat(name, msg, avatar, room)
-//                        chats.add(tempChat)
-//                        recyclerView!!.adapter?.notifyDataSetChanged()
-//                        recyclerView!!.scrollToPosition(recyclerViewAdaptor.itemCount-1)
-//                    }
-//                })
-//            }
-//        }).start()
-
         val obj: TestChat = Gson().fromJson(args[0].toString(), TestChat::class.java)
 
         Thread(object : Runnable{
@@ -320,7 +299,6 @@ class GameRoomActivity : AppCompatActivity() {
     fun getMe() {
         myData = PreferenceUtil(this).getUser("myUser")!!
 
-        // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
         val data = mapOf<String, User>("user" to myData)
         val call = ApiObject.getRetrofitService.getMe(data)
         call.enqueue(object: Callback<User> {

@@ -20,7 +20,6 @@ import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ActivityReadyBinding
 import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 import com.example.shutthemouth.ui.GameRoom.SocketApplication
-import com.example.shutthemouth.ui.closet.ReadyAdapter
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
 import org.json.JSONObject
@@ -31,6 +30,7 @@ import retrofit2.Response
 class ReadyActivity : AppCompatActivity() {
     private lateinit var binding : ActivityReadyBinding
     var ready_state = false
+
 
     lateinit var mSocket: io.socket.client.Socket
     lateinit var myData : User
@@ -48,6 +48,10 @@ class ReadyActivity : AppCompatActivity() {
         binding = ActivityReadyBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        val tempList = ArrayList<String>()
+
+        myData = User("as","younbaeKey","윤배넙죽","nubzuki",false,true,tempList,"1")
+
 
         // val receivedResult = intent.getStringExtra("result") as Int // 이전 화면에서 룸 정보 받아오기
         getMe()
@@ -94,18 +98,22 @@ class ReadyActivity : AppCompatActivity() {
         myData.name = PreferenceUtil(this).getString("name","")
         myData.key = PreferenceUtil(this).getString("key","")
         myData.avatar = PreferenceUtil(this).getString("avatar","")
+        myData.currentRoom = "roomId"
+        myData.isReady = false
+        myData.isAlive = true
         myData.isAlive = true
 
         // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
         val data = mapOf<String, User>("user" to myData)
-        val call = ApiObject.getRetrofitService.getMe(data)
+        val call = ApiObject.getRetrofitService.getUser(data)
         call.enqueue(object: Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
-                    PreferenceUtil(this@ReadyActivity).setString("currentRoom", myData.currentRoom.toString())
+                    PreferenceUtil(this@ReadyActivity).setString("currentRoom", tempData.currentRoom.toString())
                     myData.currentRoom = tempData.currentRoom
+                    Toast.makeText(applicationContext, tempData.name, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -127,11 +135,14 @@ class ReadyActivity : AppCompatActivity() {
                     for(i in userList) {
                         if(i.isReady) {
                             readyCount++
+                        } else {
+                            Log.d("not ready", i.name)
                         }
                     }
                     Log.d("aa", "aa")
                     adapter = ReadyAdapter(userList, this@ReadyActivity)
                     binding.readyGv.adapter = adapter
+                    Log.d("size",adapter.count.toString())
                 }
             }
 

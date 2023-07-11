@@ -18,6 +18,7 @@ import com.example.shutthemouth.ApiObject
 import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
 import com.example.shutthemouth.Room
+import com.example.shutthemouth.STMAPI
 import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.FragmentMainBinding
 import com.example.shutthemouth.ui.readyRoom.ReadyActivity
@@ -34,6 +35,8 @@ class MainFragment : Fragment() {
     lateinit var roomList: List<Room>
     lateinit var refreshLayout : SwipeRefreshLayout
 
+    lateinit var myData : User
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +45,8 @@ class MainFragment : Fragment() {
     ): View {
         // setDummyData
         // setDummyMe()
+
+        myData = PreferenceUtil(requireContext()).getUser("myUser")!!
 
 
         _binding = FragmentMainBinding.inflate(inflater, container, false)
@@ -116,10 +121,26 @@ class MainFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            val intent = Intent(requireContext(), ReadyActivity::class.java).apply {
-                putExtra("selectedUserList", roomList[position].users)
-            }
-            startActivity(intent)
+
+            val data = STMAPI.EnterRoomRequest(myData, roomList[position].roomId)
+            val call = ApiObject.getRetrofitService.enterRoom(data)
+            call.enqueue(object: Callback<Boolean> {
+                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                    Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
+                    if(response.isSuccessful) {
+                        myData.currentRoom = roomList.get(position).roomId
+                        PreferenceUtil(requireContext()).setUser("myUser",myData)
+                        val intent = Intent(requireContext(), ReadyActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+
+                override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                    Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+
         }
 
         return root

@@ -62,7 +62,7 @@ class ReadyActivity : AppCompatActivity() {
         mSocket.on("someoneEnter", onEnterMessage)
         mSocket.on("wordSubmit", onSubmitMessage)
 
-        getMyRoom()
+        // getMyRoom()
 
         //준비 완료!
         binding.readyBtn.setBackgroundResource(R.drawable.unready_btn)
@@ -101,6 +101,7 @@ class ReadyActivity : AppCompatActivity() {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
                     myData.currentRoom = tempData.currentRoom
                     PreferenceUtil(this@ReadyActivity).setUser("myUser",myData)
+                    getMyRoom()
                 }
             }
 
@@ -111,6 +112,12 @@ class ReadyActivity : AppCompatActivity() {
     }
 
     fun getMyRoom() {
+
+//        userList.add(User("name", "asd","park","nupzuki",false,true, currentRoom = "1"))
+//        adapter = ReadyAdapter(userList, this@ReadyActivity)
+//        binding.readyGv.adapter = adapter
+//
+
         val data = mapOf<String,User>("user" to myData)
         val call = ApiObject.getRetrofitService.getMyRoom(data)
         call.enqueue(object: Callback<Room> {
@@ -118,7 +125,7 @@ class ReadyActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
                     currentRoom = response.body() ?: Room("1",userList,"","",0,0,true)
-                    userList = currentRoom.users
+                    userList = ArrayList(currentRoom.users)
                     for(i in userList) {
                         if(i.isReady) {
                             readyCount++
@@ -134,6 +141,25 @@ class ReadyActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Room>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.leaveRoom(data)
+        call.enqueue(object: Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
                 Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
             }
         })

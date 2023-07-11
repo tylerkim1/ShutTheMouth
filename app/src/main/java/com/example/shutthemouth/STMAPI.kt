@@ -38,7 +38,7 @@ interface STMAPI {
     fun enterRoom(@Body request: EnterRoomRequest): Call<Boolean>
 
     @POST("/room/leave")
-    fun leaveRoom(@Body user: User): Call<Void>
+    fun leaveRoom(@Body user: Map<String,User>): Call<Void>
 
     @POST("/user/dead")
     fun setDead(@Body user: User): Call<Void>
@@ -54,6 +54,6 @@ interface STMAPI {
 
     data class EnterRoomRequest(
         val user: User,
-        val roomId: Int
+        val roomId: String
     )
 }

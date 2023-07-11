@@ -114,7 +114,7 @@ class GameRoomActivity : AppCompatActivity() {
             val tempText = chatEditText.text
             if(!tempText.isEmpty() && myData.isAlive) {
                 // chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
-                sendChat(tempText.toString())
+
                 recyclerViewAdaptor.notifyDataSetChanged()
                 if(checkBanWord(tempText.toString(), myData)) {
                     die()
@@ -122,6 +122,7 @@ class GameRoomActivity : AppCompatActivity() {
                 resetTimer()
                 chatEditText.setText("")
             }
+            sendChat(tempText.toString())
         }
     }
 
@@ -205,7 +206,9 @@ class GameRoomActivity : AppCompatActivity() {
 
     var onMessage = Emitter.Listener { args ->
         Log.d("fdf","dfdfdfdfdfd")
-        val obj = JSONObject(args[0].toString())
+        // val obj = JSONObject(args[0].toString())
+        val json = args[0].toString() // JSON 문자열
+        val obj = JSONObject(json)
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {

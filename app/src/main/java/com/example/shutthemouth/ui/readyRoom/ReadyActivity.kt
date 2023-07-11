@@ -20,6 +20,8 @@ import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 import com.example.shutthemouth.ui.GameRoom.SocketApplication
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,11 +50,22 @@ class ReadyActivity : AppCompatActivity() {
         setContentView(view)
         val tempList = ArrayList<String>()
 
+
+
+
         myData = PreferenceUtil(this).getUser("myUser")!!
+
+        runBlocking {
+//            adapter = ReadyAdapter(userList, this@ReadyActivity)
+//            binding.readyGv.adapter = adapter
+            getMe()
+        }
 
 
         // val receivedResult = intent.getStringExtra("result") as Int // 이전 화면에서 룸 정보 받아오기
-        getMe()
+
+
+
 
         mSocket = SocketApplication.get()
         mSocket.connect()
@@ -139,6 +152,8 @@ class ReadyActivity : AppCompatActivity() {
                     Log.d("aa", "aa")
                     adapter = ReadyAdapter(userList, this@ReadyActivity)
                     binding.readyGv.adapter = adapter
+
+                    // adapter.notifyDataSetChanged()
 
                     // binding.readyGv.adapter.
                     Log.d("size",adapter.count.toString())

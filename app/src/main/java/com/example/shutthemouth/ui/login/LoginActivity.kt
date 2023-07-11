@@ -120,6 +120,7 @@ class LoginActivity : AppCompatActivity() {
                         } else {
                             // User does not exist,
                             val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
+                            intent.putExtra("userKey", user.key)
                             startActivity(intent)
                             finish()
                         }

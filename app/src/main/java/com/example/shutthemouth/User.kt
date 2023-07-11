@@ -11,7 +11,7 @@ data class User (
     var isReady : Boolean = false,
     var isAlive : Boolean = false,
     var banWord : ArrayList<String> = ArrayList(),
-    var currentRoom : Int = -1,
+    var currentRoom : String = "-1",
 ): Serializable
 
 fun checkBanWord(word: String, user: User) : Boolean {

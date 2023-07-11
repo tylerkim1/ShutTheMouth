@@ -55,6 +55,9 @@ class ReadyActivity : AppCompatActivity() {
         getMe()
 
         mSocket = SocketApplication.get()
+        mSocket.connect()
+//
+        mSocket.emit("enter", Gson().toJson(myData))
 
         mSocket.emit("readyEnter", Gson().toJson(myData))
         mSocket.on("someoneReady", onReadyMessage)
@@ -136,6 +139,8 @@ class ReadyActivity : AppCompatActivity() {
                     Log.d("aa", "aa")
                     adapter = ReadyAdapter(userList, this@ReadyActivity)
                     binding.readyGv.adapter = adapter
+
+                    // binding.readyGv.adapter.
                     Log.d("size",adapter.count.toString())
                 }
             }
@@ -212,14 +217,16 @@ class ReadyActivity : AppCompatActivity() {
     }
 
     var onReadyMessage = Emitter.Listener { args ->
+        Log.d("someone ready", "kkk")
         val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
-
+        Log.d("someone ready", obj.name)
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
                         val userId = obj.userId
                         val myIndex = userList.indexOfFirst { it.userId == userId }
+                        Log.d("someone ready", obj.name)
                         userList[myIndex].isReady = !userList[myIndex].isReady
                         if(userList[myIndex].isReady) {
                             readyCount++
@@ -227,6 +234,7 @@ class ReadyActivity : AppCompatActivity() {
                         } else {
                             readyCount--
                         }
+                        adapter.updateData(userList)
                         adapter.notifyDataSetChanged()
                         checkAllReady()
                     }
@@ -243,8 +251,10 @@ class ReadyActivity : AppCompatActivity() {
                 runOnUiThread(Runnable {
                     kotlin.run {
                         submitCount++
+                        Log.d("someone submit", obj.name)
                         if(submitCount == userList.size) {
                             // todo
+
                             dialog.dismiss()
 
                             val intent = Intent(this@ReadyActivity, GameRoomActivity::class.java)
@@ -269,7 +279,9 @@ class ReadyActivity : AppCompatActivity() {
                         if(tempIsReady) {
                             readyCount--
                         }
+                        Log.d("someone leave", obj.name)
                         userList.removeAt(myIndex)
+                        adapter.updateData(userList)
                         adapter.notifyDataSetChanged()
                     }
                 })
@@ -285,6 +297,8 @@ class ReadyActivity : AppCompatActivity() {
                 runOnUiThread(Runnable {
                     kotlin.run {
                         userList.add(obj)
+                        Log.d("someone Enter", obj.name)
+                        adapter.updateData(userList)
                         adapter.notifyDataSetChanged()
                     }
                 })

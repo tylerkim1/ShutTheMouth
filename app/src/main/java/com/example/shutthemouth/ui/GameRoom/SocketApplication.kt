@@ -10,7 +10,8 @@ class SocketApplication {
         fun get(): Socket {
             try {
                 // [uri]부분은 "http://X.X.X.X:3000" 꼴로 넣어주는 게 좋다.
-                socket = IO.socket("http://172.10.5.167:80")
+//                socket = IO.socket("http://172.10.5.167:80")
+                socket = IO.socket("http://172.10.5.110:80")
             } catch (e: URISyntaxException) {
                 e.printStackTrace()
             }

@@ -204,8 +204,9 @@ class GameRoomActivity : AppCompatActivity() {
 
 
     var onMessage = Emitter.Listener { args ->
-        val obj: TestChat = Gson().fromJson(args[0].toString(), TestChat::class.java)
 
+        val obj: TestChat = Gson().fromJson(args[0].toString(), TestChat::class.java)
+        Log.d("message", obj.chat)
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {

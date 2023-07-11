@@ -55,7 +55,7 @@ class ReadyActivity : AppCompatActivity() {
         getMe()
 
         mSocket = SocketApplication.get()
-        mSocket.connect()
+
         mSocket.emit("readyEnter", Gson().toJson(myData))
         mSocket.on("someoneReady", onReadyMessage)
         mSocket.on("someoneLeave", onLeaveMessage)

@@ -3,7 +3,6 @@ package com.example.shutthemouth.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +41,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // setDummyData
-        setDummyMe()
+        // setDummyMe()
 
 
         _binding = FragmentMainBinding.inflate(inflater, container, false)
@@ -81,17 +80,10 @@ class MainFragment : Fragment() {
                     val maxPeople: Int = maxPeopleNumberPicker.selectedItem.toString().toInt()
 
                     // TODO: Call the API to create room
-                    val userId = PreferenceUtil(requireContext()).getString("userId","")
-                    val key = PreferenceUtil(requireContext()).getString("key","")
-                    val name = PreferenceUtil(requireContext()).getString("name","")
-                    val avatar = PreferenceUtil(requireContext()).getString("avatar","avatar1")
-                    val isReady = PreferenceUtil(requireContext()).getBoolean("isReady", false)
-                    val isAlive = PreferenceUtil(requireContext()).getBoolean("isAlive",false)
-                    val banWord = PreferenceUtil(requireContext()).getArrayListString("banWord")
-                    val currentRoom = PreferenceUtil(requireContext()).getString("currentRoom","")
+
 
                     val mainUserList = arrayListOf<User>()
-                    mainUserList.add(User(userId, key, name, avatar, isReady, isAlive, banWord, currentRoom))
+                    mainUserList.add(PreferenceUtil(requireContext()).getUser("myUser")!!)
                     val newRoom = Room("roomId", mainUserList, roomName, roomMode, minPeople, maxPeople, false)
 
                     val data = mapOf<String, Room>("room" to newRoom)
@@ -133,14 +125,6 @@ class MainFragment : Fragment() {
         return root
     }
 
-    fun setDummyMe() {
-        PreferenceUtil(requireContext()).setString("userId","64acd66eefe64216bfd463fb")
-        PreferenceUtil(requireContext()).setString("key","younbaeKey")
-        PreferenceUtil(requireContext()).setString("name","윤배넙죽")
-        PreferenceUtil(requireContext()).setString("avatar","nubzuki")
-        PreferenceUtil(requireContext()).setBoolean("isAlive",true)
-        PreferenceUtil(requireContext()).setBoolean("isReady",false)
-    }
 
     fun getRoomList() {
 

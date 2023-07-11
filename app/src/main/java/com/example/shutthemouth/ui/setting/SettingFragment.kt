@@ -6,13 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.shutthemouth.MainActivity
 import com.example.shutthemouth.PreferenceUtil
-import com.example.shutthemouth.R
 import com.example.shutthemouth.databinding.FragmentSettingBinding
 import com.example.shutthemouth.ui.login.LoginActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn

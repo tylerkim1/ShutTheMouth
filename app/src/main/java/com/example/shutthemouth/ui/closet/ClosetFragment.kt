@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.shutthemouth.ApiObject
 import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
-import com.example.shutthemouth.Room
 import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.FragmentClosetBinding
 import retrofit2.Call
@@ -25,6 +23,7 @@ class ClosetFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     val avatarList = arrayListOf<Int>()
+    lateinit var myData : User
 
     var avIdx = 0
 
@@ -35,9 +34,9 @@ class ClosetFragment : Fragment() {
     ): View {
         binding = FragmentClosetBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val preferenceUtil = PreferenceUtil(requireContext())
+        myData = PreferenceUtil(requireContext()).getUser("myUser")!!
 
-        val currentNubzuk = preferenceUtil.getString("avatar", "")
+        val currentNubzuk = myData!!.avatar
         val resId = resources.getIdentifier("@drawable/"+currentNubzuk, "drawable", "com.example.shutthemouth")
         binding.closetAvatar.setImageResource(resId)
         if(currentNubzuk == "nubzuki") {
@@ -70,7 +69,8 @@ class ClosetFragment : Fragment() {
             // MainActivity의 바인딩된 ImageView에 선택된 이미지를 설정합니다.
             binding.closetAvatar.setImageResource(closetItemList[position].avatar_img)
             binding.closetBack.setImageResource(closetItemList[position].back)
-            preferenceUtil.setString("avatar", closetItemList[position].name)
+            myData.avatar = closetItemList[position].name
+            PreferenceUtil(requireContext()).setUser("myUser",myData)
             setAvatar()
             Log.d(closetItemList[position].name, "item")
         }
@@ -79,15 +79,8 @@ class ClosetFragment : Fragment() {
     }
 
     fun setAvatar() {
-        val tempUser = User()
-        tempUser.userId = "64acd66eefe64216bfd463fb"
-        tempUser.name = PreferenceUtil(requireContext()).getString("name","")
-        tempUser.key = PreferenceUtil(requireContext()).getString("key","")
-        tempUser.avatar = PreferenceUtil(requireContext()).getString("avatar","")
-        tempUser.currentRoom = "roomId"
-        tempUser.isReady = false
-        tempUser.isAlive = true
-        val data = mapOf<String, User>("user" to tempUser)
+
+        val data = mapOf<String, User>("user" to myData)
         val call = ApiObject.getRetrofitService.setAvatar(data)
         call.enqueue(object: Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {

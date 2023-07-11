@@ -10,9 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import com.example.shutthemouth.ApiObject
-import com.example.shutthemouth.MainActivity
 import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
 import com.example.shutthemouth.Room
@@ -50,7 +48,7 @@ class ReadyActivity : AppCompatActivity() {
         setContentView(view)
         val tempList = ArrayList<String>()
 
-        myData = User("as","younbaeKey","윤배넙죽","nubzuki",false,true,tempList,"1")
+        myData = PreferenceUtil(this).getUser("myUser")!!
 
 
         // val receivedResult = intent.getStringExtra("result") as Int // 이전 화면에서 룸 정보 받아오기
@@ -93,16 +91,6 @@ class ReadyActivity : AppCompatActivity() {
     fun getMe() {
         val testArray = ArrayList<String>()
 
-
-        myData.userId = PreferenceUtil(this).getString("userId","")
-        myData.name = PreferenceUtil(this).getString("name","")
-        myData.key = PreferenceUtil(this).getString("key","")
-        myData.avatar = PreferenceUtil(this).getString("avatar","")
-        myData.currentRoom = "roomId"
-        myData.isReady = false
-        myData.isAlive = true
-        myData.isAlive = true
-
         // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
         val data = mapOf<String, User>("user" to myData)
         val call = ApiObject.getRetrofitService.getUser(data)
@@ -111,9 +99,8 @@ class ReadyActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
-                    PreferenceUtil(this@ReadyActivity).setString("currentRoom", tempData.currentRoom.toString())
                     myData.currentRoom = tempData.currentRoom
-                    Toast.makeText(applicationContext, tempData.name, Toast.LENGTH_SHORT).show()
+                    PreferenceUtil(this@ReadyActivity).setUser("myUser",myData)
                 }
             }
 

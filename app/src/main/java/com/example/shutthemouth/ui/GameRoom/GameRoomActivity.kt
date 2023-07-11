@@ -191,8 +191,9 @@ class GameRoomActivity : AppCompatActivity() {
 
     private fun die() {
         Toast.makeText(this, "you died", Toast.LENGTH_SHORT).show()
-        PreferenceUtil(this).setBoolean("isAlive", false)
+        // PreferenceUtil(this).setBoolean("isAlive", false)
         myData.isAlive = false
+        PreferenceUtil(this).setUser("myUser",myData)
         updateUser()
         resultString = resultString + "\n#${userList.size-deadCount} ${myData.name}"
         deadCount++
@@ -296,12 +297,7 @@ class GameRoomActivity : AppCompatActivity() {
     }
 
     fun getMe() {
-        myData.userId = PreferenceUtil(this).getString("userId","")
-        myData.key = PreferenceUtil(this).getString("key","")
-        myData.name = PreferenceUtil(this).getString("name","")
-
-        myData.avatar = PreferenceUtil(this).getString("avatar","")
-        myData.isAlive = true
+        myData = PreferenceUtil(this).getUser("myUser")!!
 
         // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
         val data = mapOf<String, User>("user" to myData)
@@ -311,8 +307,9 @@ class GameRoomActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
-                    PreferenceUtil(this@GameRoomActivity).setString("currentRoom", myData.currentRoom.toString())
                     myData.banWord = tempData.banWord
+                    myData.currentRoom = tempData.currentRoom
+                    PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
                 }
             }
 
@@ -401,7 +398,8 @@ class GameRoomActivity : AppCompatActivity() {
 
         override fun getItemViewType(position: Int): Int {
             val tempChat = chats[position]
-            if (tempChat.name == PreferenceUtil(this@GameRoomActivity).getString("name", "")) {
+            if (tempChat.name == myData.name) {
+                // 여기 비동기 될수도
                 return VIEW_TYPE_SENT
             } else {
                 return VIEW_TYPE_RECEIVED

@@ -2,10 +2,9 @@ package com.example.shutthemouth
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import org.json.JSONArray
-import org.json.JSONException
 
 
 public class PreferenceUtil(context: Context)

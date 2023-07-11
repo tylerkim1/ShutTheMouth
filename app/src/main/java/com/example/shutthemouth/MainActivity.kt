@@ -6,11 +6,8 @@ import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.shutthemouth.databinding.ActivityMainBinding
-import com.example.shutthemouth.ui.login.TAG
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

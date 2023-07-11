@@ -47,20 +47,19 @@ class ClosetFragment : Fragment() {
             binding.closetBack.setImageResource(R.drawable.closet_back_mun)
         } else if(currentNubzuk == "nubzuki_glass") {
             binding.closetBack.setImageResource(R.drawable.closet_back_club)
-        } else if(currentNubzuk == "nubzuk_mask") {
+        } else if(currentNubzuk == "nubzuki_mask") {
             binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
         } else {
             binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
         }
 
-
         //옷장 아이템 추가
         val closetItemList = arrayListOf<ClosetItem>()
         closetItemList.add(ClosetItem(R.drawable.gameroom_died, R.drawable.nubzuki, "nubzuki",R.drawable.closet_back_kaist))
-        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuk_sunglass, "nubzuki_sunglass",R.drawable.closet_back_ufo))
-        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "nubzuki_pant",R.drawable.closet_back_mun))
+        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuki_sunglass, "nubzuki_sunglass",R.drawable.closet_back_ufo))
+        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuki_pant, "nubzuki_pant",R.drawable.closet_back_mun))
         closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "nubzuki_glass",R.drawable.closet_back_club))
-        closetItemList.add(ClosetItem(R.drawable.nubzuk_mask_item, R.drawable.nubzuk_mask, "nubzuk_mask",R.drawable.closet_back_club))
+        closetItemList.add(ClosetItem(R.drawable.nubzuki_mask_item, R.drawable.nubzuki_mask, "nubzuki_mask",R.drawable.closet_back_club))
 
         //어댑터 연결
         val adapter = ClosetAdapter(closetItemList, requireContext())

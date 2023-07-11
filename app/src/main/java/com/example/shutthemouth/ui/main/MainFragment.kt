@@ -125,7 +125,6 @@ class MainFragment : Fragment() {
         return root
     }
 
-
     fun getRoomList() {
 
         val temp : List<Room>

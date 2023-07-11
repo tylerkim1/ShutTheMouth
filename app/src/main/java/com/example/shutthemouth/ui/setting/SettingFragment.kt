@@ -40,9 +40,12 @@ class SettingFragment : Fragment() {
         val nameTextView = binding.settingName
         val logoutButton = binding.settingLogout
 
-//        val userAvatar = PreferenceUtil(requireContext()).getInt("avatar", 0)
         val userName = myUser?.name
         nameTextView.text = userName
+
+        val userAvatar = myUser?.avatar
+        val resId = resources.getIdentifier("@drawable/"+userAvatar, "drawable", "com.example.shutthemouth")
+        avatarImageView.setImageResource(resId)
 
         logoutButton.setOnClickListener {
             mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity()) {

@@ -45,18 +45,13 @@ class SettingFragment : Fragment() {
         val logoutButton = binding.settingLogout
 
 //        val userAvatar = PreferenceUtil(requireContext()).getInt("avatar", 0)
-        val userName = PreferenceUtil(requireContext()).getString("name", "")
-
-//        Log.d("SettingFragment", "User Avatar: $userAvatar")
-//
-//        avatarImageView.setImageResource(userAvatar)
+        val userName = myUser?.name
         nameTextView.text = userName
 
         logoutButton.setOnClickListener {
-            mGoogleSignInClient.signOut()
-                .addOnCompleteListener(requireActivity()) {
-                    signOutFun()
-                }
+            mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity()) {
+                signOutFun()
+            }
         }
 
         return view

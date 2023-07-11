@@ -3,14 +3,14 @@ package com.example.shutthemouth
 import java.io.Serializable
 
 data class User (
-    var userId : String? = null,
-    var key : String? = null,
-    var name : String = "",
-    var avatar : String = "avatar1",
+    var userId : String? = "-999",
+    var key : String? = "-999",
+    var name : String = "-999",
+    var avatar : String = "nupzuki",
     var isReady : Boolean = false,
     var isAlive : Boolean = false,
     var banWord : ArrayList<String> = ArrayList(),
-    var currentRoom : String = "",
+    var currentRoom : String = "-999",
 ): Serializable
 
 fun checkBanWord(word: String, user: User) : Boolean {

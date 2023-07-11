@@ -33,7 +33,7 @@ class SetnameActivity : AppCompatActivity() {
                 userId = "temp",
                 key = userKey,
                 name = userName,
-                avatar = "avatar1",
+                avatar = "nupzuki",
                 isReady = false,
                 isAlive = false,
                 banWord = ArrayList<String>(),
@@ -55,13 +55,9 @@ class SetnameActivity : AppCompatActivity() {
                                     val myUser = response.body()
                                     Log.d("result", myUser.toString())
                                     // User added successfully, proceed with saving the user and moving to next activity
-                                    PreferenceUtil(this@SetnameActivity).setString("userId",
-                                        myUser?.userId!!)
-                                    if (userKey != null) {
-                                        PreferenceUtil(this@SetnameActivity).setString("key",userKey)
+                                    if (myUser != null) {
+                                        PreferenceUtil(this@SetnameActivity).setUser("myUser", myUser)
                                     }
-                                    PreferenceUtil(this@SetnameActivity).setString("name",userName)
-                                    PreferenceUtil(this@SetnameActivity).setString("avatar", R.drawable.nubzuki.toString())
 
                                     // MainActivity로 전환
                                     val intent = Intent(this@SetnameActivity, MainActivity::class.java)

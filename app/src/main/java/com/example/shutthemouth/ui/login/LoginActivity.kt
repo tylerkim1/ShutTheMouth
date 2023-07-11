@@ -109,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                     userId = "temp",
                     key = token,
                     name = "temp",
-                    avatar = "avatar1",
+                    avatar = "nupzuki",
                     isReady = false,
                     isAlive = false,
                     banWord = ArrayList<String>(),

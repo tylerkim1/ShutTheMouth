@@ -3,7 +3,6 @@ package com.example.shutthemouth.ui.GameRoom
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -19,6 +18,7 @@ import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shutthemouth.ApiObject
@@ -34,7 +34,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.IllegalArgumentException
 
 class GameRoomActivity : AppCompatActivity() {
 
@@ -205,18 +204,37 @@ class GameRoomActivity : AppCompatActivity() {
 
 
     var onMessage = Emitter.Listener { args ->
-        Log.d("fdf","dfdfdfdfdfd")
-        // val obj = JSONObject(args[0].toString())
-        val json = args[0].toString() // JSON 문자열
-        val obj = JSONObject(json)
+
+//        val json = args[0] as String // JSON 문자열
+//        val obj = JSONObject(json)
+//        val obj = args[0] as JSONObject
+//        Thread(object : Runnable{
+//            override fun run() {
+//                runOnUiThread(Runnable {
+//                    kotlin.run {
+//                        val msg = obj.get("chat").toString()
+//                        val name = obj.get("name").toString()
+//                        val avatar = obj.get("avatar").toString()
+//                        val room = obj.get("room").toString()
+//                        val tempChat = TestChat(name, msg, avatar, room)
+//                        chats.add(tempChat)
+//                        recyclerView!!.adapter?.notifyDataSetChanged()
+//                        recyclerView!!.scrollToPosition(recyclerViewAdaptor.itemCount-1)
+//                    }
+//                })
+//            }
+//        }).start()
+
+        val obj: TestChat = Gson().fromJson(args[0].toString(), TestChat::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("chat").toString()
-                        val name = obj.get("name").toString()
-                        val avatar = obj.get("avatar").toString()
-                        val room = obj.get("room").toString()
+                        val msg = obj.chat
+                        val name = obj.name
+                        val avatar = obj.avatar
+                        val room = obj.room
                         val tempChat = TestChat(name, msg, avatar, room)
                         chats.add(tempChat)
                         recyclerView!!.adapter?.notifyDataSetChanged()

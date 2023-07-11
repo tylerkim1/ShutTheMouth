@@ -49,13 +49,8 @@ class ReadyActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-//        val userId = PreferenceUtil(this).getInt("userId",1)
-//        val name = PreferenceUtil(this).getString("name","")
-//        val avatar = PreferenceUtil(this).getInt("avatar",1)
-//        val receivedResult = 1
-
         // val receivedResult = intent.getStringExtra("result") as Int // 이전 화면에서 룸 정보 받아오기
-        myData = User("dsaf", null, "younbae4", "avatar2", false, true, ArrayList(),1)
+        getMe()
 
         mSocket = SocketApplication.get()
         mSocket.connect()
@@ -64,12 +59,6 @@ class ReadyActivity : AppCompatActivity() {
         mSocket.on("someoneLeave", onLeaveMessage)
         mSocket.on("someoneEnter", onEnterMessage)
         mSocket.on("wordSubmit", onSubmitMessage)
-
-
-
-        // Intent를 통해 받은 userList를 사용하여 UI 업데이트
-        //val userList = intent.getSerializableExtra("selectedUserList") as ArrayList<User>? ?: arrayListOf()
-
 
         getMyRoom()
 
@@ -97,6 +86,35 @@ class ReadyActivity : AppCompatActivity() {
 
     }
 
+    fun getMe() {
+        val testArray = ArrayList<String>()
+
+
+        myData.userId = PreferenceUtil(this).getString("userId","")
+        myData.name = PreferenceUtil(this).getString("name","")
+        myData.key = PreferenceUtil(this).getString("key","")
+        myData.avatar = PreferenceUtil(this).getString("avatar","")
+        myData.isAlive = true
+
+        // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.getMe(data)
+        call.enqueue(object: Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
+                    PreferenceUtil(this@ReadyActivity).setString("currentRoom", myData.currentRoom.toString())
+                    myData.currentRoom = tempData.currentRoom
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     fun getMyRoom() {
         val data = mapOf<String,User>("user" to myData)
         val call = ApiObject.getRetrofitService.getMyRoom(data)
@@ -104,20 +122,16 @@ class ReadyActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Room>, response: Response<Room>) {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
-                    currentRoom = response.body() ?: Room(1,userList,"","",0,0,true)
+                    currentRoom = response.body() ?: Room("1",userList,"","",0,0,true)
                     userList = currentRoom.users
                     for(i in userList) {
                         if(i.isReady) {
                             readyCount++
-                            Log.d("ready++", i.avatar.toString())
-                            Log.d("avatar", R.drawable.avatar2.toString())
-                            Log.d("avatar", R.drawable.avatar1.toString())
                         }
                     }
                     Log.d("aa", "aa")
                     adapter = ReadyAdapter(userList, this@ReadyActivity)
                     binding.readyGv.adapter = adapter
-                    // binding.readyGv.adapter = adapter
                 }
             }
 

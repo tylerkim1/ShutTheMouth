@@ -4,5 +4,5 @@ data class TestChat (
     val name: String,
     val chat: String,
     val avatar: String,
-    val room: Int
+    val room: String
     )

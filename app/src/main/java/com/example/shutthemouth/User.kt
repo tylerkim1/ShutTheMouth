@@ -1,6 +1,5 @@
 package com.example.shutthemouth
 
-import com.example.shutthemouth.ui.GameRoom.TestUser
 import java.io.Serializable
 
 data class User (
@@ -11,7 +10,7 @@ data class User (
     var isReady : Boolean = false,
     var isAlive : Boolean = false,
     var banWord : ArrayList<String> = ArrayList(),
-    var currentRoom : String = "-1",
+    var currentRoom : String = "",
 ): Serializable
 
 fun checkBanWord(word: String, user: User) : Boolean {

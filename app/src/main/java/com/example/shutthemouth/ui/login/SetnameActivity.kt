@@ -33,7 +33,7 @@ class SetnameActivity : AppCompatActivity() {
                 userId = "temp",
                 key = userKey,
                 name = userName,
-                avatar = "nupzuki",
+                avatar = "nubzuki",
                 isReady = false,
                 isAlive = false,
                 banWord = ArrayList<String>(),

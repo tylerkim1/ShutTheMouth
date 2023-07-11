@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.shutthemouth.ApiObject
@@ -31,6 +32,11 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var imageView: ImageView
 
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        handleSignInResult(task)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -51,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
+            .requestIdToken("550310973720-eisrmf6ve2n44pjvvqn7ofg4ip0uu2o2.apps.googleusercontent.com")  // Replace "YOUR_SERVER_CLIENT_ID" with your actual server client ID
             .build()
 
         val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -62,13 +69,11 @@ class LoginActivity : AppCompatActivity() {
             finish()
         } else {
             // 아직 로그인하지 않은 사용자
-            // 로그인 버튼과 로그인 프로세스를 설정
             binding.loginSignInButton.visibility = View.VISIBLE
             binding.loginText.visibility = View.GONE
             binding.loginSignInButton.setSize(SignInButton.SIZE_STANDARD)
             binding.loginSignInButton.setOnClickListener {
-                val signInIntent = mGoogleSignInClient.signInIntent
-                startActivityForResult(signInIntent, RC_SIGN_IN)
+                loginWithGoogle()
             }
         }
     }
@@ -82,44 +87,58 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    fun loginWithGoogle() {
+        val gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("550310973720-ttnclqac9drqkkth45unts22bckanjpj.apps.googleusercontent.com")
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        val signInIntent: Intent = googleSignInClient.signInIntent
+        resultLauncher.launch(signInIntent)
+    }
+
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
-            val account = completedTask.getResult(ApiException::class.java)
-            // Signed in successfully
-            val user = User().apply {
-                // Adjust this line to match the fields in your User class
-                this.key = account?.id ?: ""
-                // add other fields if necessary
-            }
+            if (completedTask.isSuccessful) {
+                val account: GoogleSignInAccount? = completedTask.getResult(ApiException::class.java)
+                val token: String = account?.idToken!!
 
-            val call = ApiObject.getRetrofitService.isUserExist(user)
-            call.enqueue(object: Callback<Boolean> {
-                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                    if (response.isSuccessful && response.body() == true) {
-                        // User exists,
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        // User does not exist,
-                        val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                // Use your token
+                val user = User().apply {
+                    this.key = token
+                }
+                Log.d(TAG, user.key.toString())
+
+                val call = ApiObject.getRetrofitService.isUserExist(user)
+                call.enqueue(object: Callback<Boolean> {
+                    override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                        if (response.isSuccessful && response.body() == true) {
+                            // User exists,
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            // User does not exist,
+                            val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
+                            intent.putExtra("userKey", user.key)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    // Handle network failure
-                    Log.e(TAG, "Network request failed", t)
-                }
-            })
+                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                        // Handle network failure
+                        Log.e(TAG, "Network request failed", t)
+                    }
+                })
 
+            } else {
+                Log.e("AUTH", "Google Auth failed: ${completedTask.exception}")
+            }
         } catch (e: ApiException) {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
             binding.loginSignInButton.visibility = View.VISIBLE
             binding.loginText.visibility = View.GONE
         }
     }
-
-
 }

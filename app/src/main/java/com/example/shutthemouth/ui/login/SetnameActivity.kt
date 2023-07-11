@@ -36,7 +36,7 @@ class SetnameActivity : AppCompatActivity() {
                 isReady = false,
                 isAlive = false,
                 banWord = ArrayList<String>(),
-                currentRoom = 0
+                currentRoom = "0"
             )
 
             var data = mapOf("user" to user)

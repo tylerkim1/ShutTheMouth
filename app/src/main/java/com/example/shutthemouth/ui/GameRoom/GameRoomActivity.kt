@@ -211,8 +211,8 @@ class GameRoomActivity : AppCompatActivity() {
                     kotlin.run {
                         val msg = obj.get("chat").toString()
                         val name = obj.get("name").toString()
-                        val avatar = obj.get("avatar") as String
-                        val room = obj.get("room") as Int
+                        val avatar = obj.get("avatar").toString()
+                        val room = obj.get("room").toString()
                         val tempChat = TestChat(name, msg, avatar, room)
                         chats.add(tempChat)
                         recyclerView!!.adapter?.notifyDataSetChanged()
@@ -283,7 +283,7 @@ class GameRoomActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Room>, response: Response<Room>) {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
-                    currentRoom = response.body() ?: Room(1,userList,"","",0,0,true)
+                    currentRoom = response.body() ?: Room("1",userList,"","",0,0,true)
                     userList = currentRoom.users
                 }
             }
@@ -295,83 +295,31 @@ class GameRoomActivity : AppCompatActivity() {
 
     }
 
-    fun testAdd() {
-//        testArray.add("aa")
-//        userList.add(User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1))
-//        userList.add(User(2,"abc2","younbae2", R.drawable.avatar2,true,true,testArray,1))
-//        userList.add(User(3,"abc3","younbae3", R.drawable.avatar2,true,true,testArray,1))
-//        userList.add(User(4,"abc4","younbae4", R.drawable.avatar2,true,true,testArray,1))
-
-//        val roomTemp = Room(1,userList,"abc","default",2,4,true)
-//        val data = mapOf<String, Room>("room" to roomTemp)
-//
-//        val call = ApiObject.getRetrofitService.addRoom(data)
-//        call.enqueue(object: Callback<Void> {
-//            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-//                if(response.isSuccessful) {
-//                    Log.d("success", "roomadded")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<Void>, t: Throwable) {
-//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-
-//        myData.userId = 1
-//        val data = mapOf<String, User>("user" to myData)
-//        var tempRoom = Room(10,userList,"","",0,0,true)
-//
-//        val call = ApiObject.getRetrofitService.getMyRoom(data)
-//        call.enqueue(object: Callback<Room> {
-//            override fun onResponse(call: Call<Room>, response: Response<Room>) {
-//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-//                if(response.isSuccessful) {
-//                    val room = response.body()
-//                    Log.d("Success", "roomadded: $room")
-//                    tempRoom = room?: Room(10,userList,"","",0,0,true)
-//                    Log.d("result", tempRoom.roomId.toString())
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<Room>, t: Throwable) {
-//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-
-
-
-    }
     fun getMe() {
-        // myData.userId = PreferenceUtil(this).getString("userId","")
+        myData.userId = PreferenceUtil(this).getString("userId","")
         myData.key = PreferenceUtil(this).getString("key","")
+        myData.name = PreferenceUtil(this).getString("name","")
 
-//        var userId : Int = -1,
-//        var key : String? = null,
-//        var name : String = "",
-//        var avatar : String = "avatar1",
-//        var isReady : Boolean = false,
-//        var isAlive : Boolean = false,
-//        var banWord : ArrayList<String> = ArrayList(),
-//        var currentRoom : Int = -1,
+        myData.avatar = PreferenceUtil(this).getString("avatar","")
+        myData.isAlive = true
 
         // myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
-//        val data = mapOf<String, User>("user" to myData)
-//        val call = ApiObject.getRetrofitService.getMe(data)
-//        call.enqueue(object: Callback<User> {
-//            override fun onResponse(call: Call<User>, response: Response<User>) {
-//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-//                if(response.isSuccessful) {
-//                    myData = response.body() ?: User(1,"abc","younbae", "avatar2",true,true,testArray,1)
-//                    PreferenceUtil(this@GameRoomActivity).setString("currentRoom", myData.currentRoom.toString())
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<User>, t: Throwable) {
-//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-//            }
-//        })
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.getMe(data)
+        call.enqueue(object: Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
+                    PreferenceUtil(this@GameRoomActivity).setString("currentRoom", myData.currentRoom.toString())
+                    myData.banWord = tempData.banWord
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     inner class GridViewAdaptor(private var context: Context? ,private var userList: ArrayList<User>) : BaseAdapter() {

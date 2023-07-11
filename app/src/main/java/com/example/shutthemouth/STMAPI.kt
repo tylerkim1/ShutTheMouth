@@ -26,7 +26,7 @@ interface STMAPI {
     fun deleteUser(@Body user: User): Call<Void>
 
     @POST("/user/avatar")
-    fun setAvatar(@Body user: User): Call<Void>
+    fun setAvatar(@Body user: Map<String,User>): Call<Void>
 
     @POST("/user/ready")
     fun setReady(@Body user: User): Call<Void>

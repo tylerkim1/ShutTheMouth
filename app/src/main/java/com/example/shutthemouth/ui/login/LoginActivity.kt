@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.shutthemouth.ApiObject
 import com.example.shutthemouth.MainActivity
+import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
 import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.ActivityLoginBinding
@@ -31,6 +33,11 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var imageView: ImageView
 
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        handleSignInResult(task)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -51,6 +58,7 @@ class LoginActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
+            .requestIdToken("550310973720-eisrmf6ve2n44pjvvqn7ofg4ip0uu2o2.apps.googleusercontent.com")  // Replace "YOUR_SERVER_CLIENT_ID" with your actual server client ID
             .build()
 
         val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -62,13 +70,11 @@ class LoginActivity : AppCompatActivity() {
             finish()
         } else {
             // 아직 로그인하지 않은 사용자
-            // 로그인 버튼과 로그인 프로세스를 설정
             binding.loginSignInButton.visibility = View.VISIBLE
             binding.loginText.visibility = View.GONE
             binding.loginSignInButton.setSize(SignInButton.SIZE_STANDARD)
             binding.loginSignInButton.setOnClickListener {
-                val signInIntent = mGoogleSignInClient.signInIntent
-                startActivityForResult(signInIntent, RC_SIGN_IN)
+                loginWithGoogle()
             }
         }
     }
@@ -82,44 +88,70 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    fun loginWithGoogle() {
+        val gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("550310973720-ttnclqac9drqkkth45unts22bckanjpj.apps.googleusercontent.com")
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        val signInIntent: Intent = googleSignInClient.signInIntent
+        resultLauncher.launch(signInIntent)
+    }
+
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
-            val account = completedTask.getResult(ApiException::class.java)
-            // Signed in successfully
-            val user = User().apply {
-                // Adjust this line to match the fields in your User class
-                this.key = account?.id ?: ""
-                // add other fields if necessary
-            }
+            if (completedTask.isSuccessful) {
+                val account: GoogleSignInAccount? = completedTask.getResult(ApiException::class.java)
+                val token: String = account?.idToken!!
 
-            val call = ApiObject.getRetrofitService.isUserExist(user)
-            call.enqueue(object: Callback<Boolean> {
-                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                    if (response.isSuccessful && response.body() == true) {
-                        // User exists,
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        // User does not exist,
-                        val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                // Use your token
+                val user = User(
+                    userId = "temp",
+                    key = token,
+                    name = "temp",
+                    avatar = "nupzuki",
+                    isReady = false,
+                    isAlive = false,
+                    banWord = ArrayList<String>(),
+                    currentRoom = "0"
+                )
+
+                val tempData = mapOf("user" to user)
+                val call = ApiObject.getRetrofitService.isUserExist(tempData)
+                call.enqueue(object: Callback<User> {
+                    override fun onResponse(call: Call<User>, response: Response<User>) {
+                        Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                        if(response.isSuccessful) {
+                            val myUser = response.body()
+                            Log.d("this user", myUser.toString())
+                            if (myUser != null) {
+                                PreferenceUtil(this@LoginActivity).setUser("myUser", myUser)
+                            }
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            // User does not exist,
+                            val intent = Intent(this@LoginActivity, SetnameActivity::class.java)
+                            intent.putExtra("userKey", token)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    // Handle network failure
-                    Log.e(TAG, "Network request failed", t)
-                }
-            })
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        // Handle network failure
+                        Log.e(TAG, "Network request failed", t)
+                    }
+                })
 
+            } else {
+                Log.e("AUTH", "Google Auth failed: ${completedTask.exception}")
+            }
         } catch (e: ApiException) {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
             binding.loginSignInButton.visibility = View.VISIBLE
             binding.loginText.visibility = View.GONE
         }
     }
-
-
 }

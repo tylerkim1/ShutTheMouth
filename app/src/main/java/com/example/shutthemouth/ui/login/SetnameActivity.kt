@@ -23,16 +23,17 @@ class SetnameActivity : AppCompatActivity() {
 
         val button: Button = findViewById(R.id.setname_button)
         val nameInput: EditText = findViewById(R.id.setname_inputName)
+        val userKey = intent.getStringExtra("userKey")
 
         button.setOnClickListener {
             // EditText에 작성한 이름을 가져와 User 클래스의 인스턴스 생성
 
             val userName = nameInput.text.toString()
             val user = User(
-                userId = "final trial",
-                key = "temp",
+                userId = "temp",
+                key = userKey,
                 name = userName,
-                avatar = "avatar1",
+                avatar = "nupzuki",
                 isReady = false,
                 isAlive = false,
                 banWord = ArrayList<String>(),
@@ -50,22 +51,20 @@ class SetnameActivity : AppCompatActivity() {
                         val addUserCall = ApiObject.getRetrofitService.addUser(data)
                         addUserCall.enqueue(object: Callback<User> {
                             override fun onResponse(call: Call<User>, response: Response<User>) {
-                                if (response.isSuccessful) {
+                                if (response.isSuccessful && response.body() != null) {
+                                    val myUser = response.body()
+                                    Log.d("result", myUser.toString())
                                     // User added successfully, proceed with saving the user and moving to next activity
-                                    PreferenceUtil(this@SetnameActivity).setString("userId",
-                                        response.body()?.userId!!)
-                                    PreferenceUtil(this@SetnameActivity).setString("key","temp")
-                                    PreferenceUtil(this@SetnameActivity).setString("name",userName)
-                                    PreferenceUtil(this@SetnameActivity).setInt("avatar", R.drawable.nubzuki)
+                                    if (myUser != null) {
+                                        PreferenceUtil(this@SetnameActivity).setUser("myUser", myUser)
+                                    }
 
                                     // MainActivity로 전환
-                                    Log.d("result", response.body().toString())
                                     val intent = Intent(this@SetnameActivity, MainActivity::class.java)
-                                    intent.putExtra("user", user)
                                     startActivity(intent)
                                 } else {
                                     Log.d("HTTP error code", response.code().toString())
-                                    Toast.makeText(this@SetnameActivity, "서버 에러: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@SetnameActivity, "이름을 입력해주세요!", Toast.LENGTH_SHORT).show()
                                 }
                             }
 

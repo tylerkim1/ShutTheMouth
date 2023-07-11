@@ -134,29 +134,12 @@ class MainFragment : Fragment() {
     }
 
     fun setDummyMe() {
-        val tempUser = User("","younbaeKey","윤배넙죽","nubzuki",false,true)
-        PreferenceUtil(requireContext()).setString("userId","happyAI")
+        PreferenceUtil(requireContext()).setString("userId","64acd66eefe64216bfd463fb")
         PreferenceUtil(requireContext()).setString("key","younbaeKey")
         PreferenceUtil(requireContext()).setString("name","윤배넙죽")
         PreferenceUtil(requireContext()).setString("avatar","nubzuki")
         PreferenceUtil(requireContext()).setBoolean("isAlive",true)
         PreferenceUtil(requireContext()).setBoolean("isReady",false)
-        val data = mapOf<String, User>("user" to tempUser)
-        val call = ApiObject.getRetrofitService.addUser(data)
-        call.enqueue(object: Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
-                if(response.isSuccessful) {
-                    val temp = response.body()
-                    PreferenceUtil(requireContext()).setString("userId", temp!!.userId!!)
-                    Toast.makeText(requireContext(),"maked"+temp!!.userId!!, Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     fun getRoomList() {

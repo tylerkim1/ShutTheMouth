@@ -1,4 +1,4 @@
-package com.example.shutthemouth.ui.closet
+package com.example.shutthemouth.ui.readyRoom
 
 import android.content.Context
 import android.util.Log
@@ -44,7 +44,10 @@ class ReadyAdapter(items: ArrayList<User>, context: Context) :
         val user = userList[position]
         // 데이터를 뷰에 바인딩합니다.
         // binding.gvReadyItem.setImageResource(user.avatar)
-        val resId = view.resources.getIdentifier(user.avatar, "drawable", "com.example.shutthemouth.ui.closet")
+        Log.d("avatar :", user.avatar)
+        val resId = view.resources.getIdentifier("@drawable/"+user.avatar, "drawable", "com.example.shutthemouth")
+
+        Log.d("resID :", resId.toString())
         binding.gvReadyItem.setImageResource(resId)
         if(user.isReady) {
             binding.readyroomReadySign.visibility = View.VISIBLE

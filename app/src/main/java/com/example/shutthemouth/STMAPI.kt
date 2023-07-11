@@ -13,7 +13,7 @@ interface STMAPI {
     @POST("/user/add")
     fun addUser(@Body user: Map<String, User>): Call<User>
 
-    @POST("/user/getMe")
+    @POST("/user/get")
     fun getMe(@Body user: Map<String,User>): Call<User>
 
     @POST("/user/exist")

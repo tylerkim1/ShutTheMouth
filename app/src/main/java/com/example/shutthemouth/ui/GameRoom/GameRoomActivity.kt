@@ -28,6 +28,7 @@ import com.example.shutthemouth.ResultActivity
 import com.example.shutthemouth.Room
 import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
+import com.example.shutthemouth.ui.main.MainGridViewAdapter
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
 import kotlinx.coroutines.runBlocking
@@ -103,6 +104,26 @@ class GameRoomActivity : AppCompatActivity() {
             // 결과 창으로 이동
             mSocket.emit("left", Gson().toJson(myData))
             mSocket.disconnect()
+
+            val data = mapOf<String, User>("user" to myData)
+            val call = ApiObject.getRetrofitService.leaveRoom(data)
+            call.enqueue(object: Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    mSocket.emit("left", Gson().toJson(myData))
+                    myData.isReady = false
+                    PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
+                    Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                    if(response.isSuccessful) {
+                        Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+
             goResultView()
             // checkAmIWinner()
         }
@@ -126,9 +147,10 @@ class GameRoomActivity : AppCompatActivity() {
                     die()
                 }
                 resetTimer()
+                sendChat(tempText.toString())
                 chatEditText.setText("")
             }
-            sendChat(tempText.toString())
+
         }
     }
 
@@ -153,7 +175,7 @@ class GameRoomActivity : AppCompatActivity() {
     }
 
     fun checkAmIWinner() {
-        if(true) { //deadCount+1 == userList.size
+        if(deadCount+1 == userList.size) { //deadCount+1 == userList.size
             stopTimer()
             //이긴 다이얼로그 띄우기
             val winner_dialog = Dialog(this)

@@ -74,7 +74,6 @@ class MainFragment : Fragment() {
             val maxPeopleNumberPicker = dialogLayout.findViewById<Spinner>(R.id.createRoom_maxPpl_spinner)
 
             builder.setView(dialogLayout)
-                .setTitle("Create Room")
                 .setPositiveButton("Create") { dialog, _ ->
                     // Get user input
                     // var roomId = roomList.size + 1 // Or any other way to generate a unique room ID

@@ -33,7 +33,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         android:contentDescription="createRoom"
-        app:srcCompat="@drawable/plus"
+        android:background="@drawable/plus_button"
         app:fabCustomSize="70dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

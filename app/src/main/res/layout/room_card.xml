@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@drawable/closet_item_back">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,16 +22,18 @@
             <TextView
                 android:id="@+id/main_roomId"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="15sp"
                 android:text="001"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:visibility="invisible"/>
 
             <TextView
                 android:id="@+id/main_roomTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/dunggeunmo"
                 android:text="입닥쳐 말포이"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 android:textColor="@color/black"
                 android:maxLines="2"
                 android:ellipsize="end" />
@@ -52,6 +54,7 @@
                     android:id="@+id/main_roomMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/dunggeunmo"
                     android:text="기본 모드"
                     android:textColor="@color/black"/>
 
@@ -65,12 +68,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3"
+                        android:fontFamily="@font/dunggeunmo"
                         android:textColor="@color/black"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="/"
+                        android:fontFamily="@font/dunggeunmo"
                         android:textColor="@color/black"/>
 
                     <TextView
@@ -78,6 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8"
+                        android:fontFamily="@font/dunggeunmo"
                         android:textColor="@color/black"/>
 
                 </LinearLayout>

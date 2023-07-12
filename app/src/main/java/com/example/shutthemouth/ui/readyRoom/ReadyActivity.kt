@@ -54,6 +54,7 @@ class ReadyActivity : AppCompatActivity() {
 
 
         myData = PreferenceUtil(this).getUser("myUser")!!
+        Log.d("myID", myData.userId!!)
 
         runBlocking {
 //            adapter = ReadyAdapter(userList, this@ReadyActivity)
@@ -173,6 +174,7 @@ class ReadyActivity : AppCompatActivity() {
         val call = ApiObject.getRetrofitService.leaveRoom(data)
         call.enqueue(object: Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                mSocket.emit("leave", Gson().toJson(myData))
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
                     Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
@@ -194,7 +196,7 @@ class ReadyActivity : AppCompatActivity() {
 
             val nameText = dialog.findViewById<TextView>(R.id.ready_name_text)
             val banWordEdit = dialog.findViewById<EditText>(R.id.ready_word_edit)
-            val banWordBtn = dialog.findViewById<Button>(R.id.ready_btn)
+            val banWordBtn = dialog.findViewById<Button>(R.id.ready_dialog_closeButton)
 
             val myIndex = userList.indexOfFirst { it.userId == myData.userId }
 
@@ -227,6 +229,8 @@ class ReadyActivity : AppCompatActivity() {
 
                 }
             }
+
+            dialog.show()
 
         }
     }
@@ -306,15 +310,20 @@ class ReadyActivity : AppCompatActivity() {
 
     var onEnterMessage = Emitter.Listener { args ->
         val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+        Log.d("enter!!","enter!!")
 
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        userList.add(obj)
-                        Log.d("someone Enter", obj.name)
-                        adapter.updateData(userList)
-                        adapter.notifyDataSetChanged()
+                        if(obj.userId != myData.userId) {
+                            userList.add(obj)
+                            Log.d("someone Enter", obj.name)
+                            adapter.updateData(userList)
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            Log.d("i am Enter", obj.name)
+                        }
                     }
                 })
             }

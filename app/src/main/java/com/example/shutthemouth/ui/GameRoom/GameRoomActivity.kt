@@ -30,6 +30,7 @@ import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -61,8 +62,12 @@ class GameRoomActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // myData.userId = PreferenceUtil(this).getString("userId","")
 
-        getMe()
-        setUserList()
+        // getMe()
+        runBlocking {
+//            adapter = ReadyAdapter(userList, this@ReadyActivity)
+//            binding.readyGv.adapter = adapter
+            getMe()
+        }
 
         mSocket = SocketApplication.get()
         mSocket.connect()
@@ -310,6 +315,7 @@ class GameRoomActivity : AppCompatActivity() {
                     myData.banWord = tempData.banWord
                     myData.currentRoom = tempData.currentRoom
                     PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
+                    setUserList()
                 }
             }
 

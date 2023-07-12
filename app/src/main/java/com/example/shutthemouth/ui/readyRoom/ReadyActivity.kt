@@ -98,11 +98,6 @@ class ReadyActivity : AppCompatActivity() {
             }
         }
 
-        binding.readyTempbtn.setOnClickListener {
-            val intent = Intent(this, GameRoomActivity::class.java)
-            startActivity(intent)
-        }
-
     }
 
     fun getMe() {

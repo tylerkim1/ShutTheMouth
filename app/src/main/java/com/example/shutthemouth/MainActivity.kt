@@ -1,5 +1,6 @@
 package com.example.shutthemouth
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -35,6 +36,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val  mediaPlayer = MediaPlayer.create(this, R.raw.music);
+        mediaPlayer.start();
 
         Log.d("this user", myData.toString())
         val data = mapOf<String,User>("user" to myData)

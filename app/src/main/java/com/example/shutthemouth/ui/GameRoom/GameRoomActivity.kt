@@ -28,11 +28,9 @@ import com.example.shutthemouth.ResultActivity
 import com.example.shutthemouth.Room
 import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
-import com.example.shutthemouth.ui.main.MainGridViewAdapter
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
 import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -469,6 +467,9 @@ class GameRoomActivity : AppCompatActivity() {
             val avatarImage = view.findViewById<ImageView>(R.id.gameroom_me_avatar)
             val chatText = view.findViewById<TextView>(R.id.gameroom_me_chat)
         }
+    }
+
+    override fun onBackPressed() {
     }
 
 

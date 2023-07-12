@@ -81,7 +81,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/gameroom_died"
-        android:visibility="gone"
+        android:elevation="8dp"
+        android:visibility="invisible"
         >
     </ImageView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

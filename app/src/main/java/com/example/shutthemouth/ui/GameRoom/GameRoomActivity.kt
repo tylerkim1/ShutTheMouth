@@ -28,6 +28,7 @@ import com.example.shutthemouth.ResultActivity
 import com.example.shutthemouth.Room
 import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
+import com.example.shutthemouth.ui.main.MainGridViewAdapter
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
 import kotlinx.coroutines.runBlocking
@@ -63,6 +64,8 @@ class GameRoomActivity : AppCompatActivity() {
         // myData.userId = PreferenceUtil(this).getString("userId","")
 
         // getMe()
+        myData = PreferenceUtil(this).getUser("myUser")!!
+
         runBlocking {
 //            adapter = ReadyAdapter(userList, this@ReadyActivity)
 //            binding.readyGv.adapter = adapter
@@ -86,8 +89,8 @@ class GameRoomActivity : AppCompatActivity() {
 
         // setUserList()
         gridView = findViewById(R.id.gameroom_grid)
-        gridViewAdaptor = GridViewAdaptor(this, userList)
-        gridView?.adapter = gridViewAdaptor
+//        gridViewAdaptor = GridViewAdaptor(this, userList)
+//        gridView?.adapter = gridViewAdaptor
 
         timerTextView = findViewById(R.id.gameroom_timer)
 
@@ -99,18 +102,41 @@ class GameRoomActivity : AppCompatActivity() {
         val exitButton = findViewById<Button>(R.id.gameroom_exit_button)
         exitButton.setOnClickListener {
             // 결과 창으로 이동
-            mSocket.emit("left", Gson().toJson(myData))
-            mSocket.disconnect()
-            goResultView()
+//            mSocket.emit("left", Gson().toJson(myData))
+//            mSocket.disconnect()
+//
+//            val data = mapOf<String, User>("user" to myData)
+//            val call = ApiObject.getRetrofitService.leaveRoom(data)
+//            call.enqueue(object: Callback<Void> {
+//                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+//                    mSocket.emit("left", Gson().toJson(myData))
+//                    myData.isReady = false
+//                    myData.isAlive = true
+//                    PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
+//                    Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+//                    if(response.isSuccessful) {
+//                        Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<Void>, t: Throwable) {
+//                    Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+
+
+            diegoResultView()
             // checkAmIWinner()
         }
 
         val closeButton = dialog.findViewById<Button>(R.id.closeButton)
         closeButton.setOnClickListener {
             dialog.dismiss()
+            goResultView()
         }
 
         startTimer()
+        Log.d("asdasdasd","asdasdasdasd")
 
         val sendButton = findViewById<Button>(R.id.gameroom_send)
         val chatEditText = findViewById<EditText>(R.id.gameroom_chat_textedit)
@@ -120,13 +146,16 @@ class GameRoomActivity : AppCompatActivity() {
                 // chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
 
                 recyclerViewAdaptor.notifyDataSetChanged()
+                sendChat(tempText.toString())
                 if(checkBanWord(tempText.toString(), myData)) {
                     die()
+                } else {
+                    resetTimer()
                 }
-                resetTimer()
+
                 chatEditText.setText("")
             }
-            sendChat(tempText.toString())
+
         }
     }
 
@@ -137,13 +166,16 @@ class GameRoomActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val userId = obj.userId
-                        val myIndex = userList.indexOfFirst { it.userId == userId }
-                        userList[myIndex].isAlive = false
-                        resultString = resultString + "\n#${userList.size-deadCount} ${userId}"
-                        deadCount++
-                        gridViewAdaptor.notifyDataSetChanged()
-                        checkAmIWinner()
+                        if(myData.userId != obj.userId) {
+                            val userId = obj.userId
+                            val myIndex = userList.indexOfFirst { it.userId == userId }
+                            userList[myIndex].isAlive = false
+                            resultString = "#${userList.size-deadCount} ${obj.name}" + "\n" + resultString
+                            deadCount++
+                            gridViewAdaptor.notifyDataSetChanged()
+                            checkAmIWinner()
+                        }
+
                     }
                 })
             }
@@ -151,7 +183,7 @@ class GameRoomActivity : AppCompatActivity() {
     }
 
     fun checkAmIWinner() {
-        if(true) { //deadCount+1 == userList.size
+        if(deadCount+1 == userList.size) { //deadCount+1 == userList.size
             stopTimer()
             //이긴 다이얼로그 띄우기
             val winner_dialog = Dialog(this)
@@ -187,7 +219,7 @@ class GameRoomActivity : AppCompatActivity() {
                 goResultView()
             }
 
-            resultString = resultString + "#1 " + myData.name
+            resultString = "#1 " + myData.name +"\n"+resultString
 
             winner_dialog.show()
             //게임 끝났다는 신호 보내기
@@ -200,9 +232,12 @@ class GameRoomActivity : AppCompatActivity() {
         myData.isAlive = false
         PreferenceUtil(this).setUser("myUser",myData)
         updateUser()
-        resultString = resultString + "\n#${userList.size-deadCount} ${myData.name}"
+        // resultString = resultString + "\n#${userList.size-deadCount} ${myData.name}"
+        resultString = "#${userList.size-deadCount} ${myData.name}" + "\n" + resultString
         deadCount++
         gridViewAdaptor.notifyDataSetChanged()
+        mSocket.emit("left", Gson().toJson(myData))
+        mSocket.disconnect()
         dialog.show()
         stopTimer()
     }
@@ -234,7 +269,59 @@ class GameRoomActivity : AppCompatActivity() {
         mSocket.emit("newMessage", Gson().toJson(TestChat(myData.name, message,myData.avatar,myData.currentRoom)))
     }
 
+    private fun diegoResultView() {
+
+
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.leaveRoom(data)
+        call.enqueue(object: Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                mSocket.emit("left", Gson().toJson(myData))
+                myData.isReady = false
+                myData.isAlive = true
+                PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra("avatar", myData.avatar)
+        intent.putExtra("result", resultString)
+        startActivity(intent)
+    }
+
     private fun goResultView() {
+        mSocket.emit("left", Gson().toJson(myData))
+        mSocket.disconnect()
+
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.leaveRoom(data)
+        call.enqueue(object: Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                mSocket.emit("left", Gson().toJson(myData))
+                myData.isReady = false
+                myData.isAlive = true
+                PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+
         val intent = Intent(this, ResultActivity::class.java)
         intent.putExtra("avatar", myData.avatar)
         intent.putExtra("result", resultString)
@@ -243,6 +330,8 @@ class GameRoomActivity : AppCompatActivity() {
 
     private fun startTimer() {
         // 기존 타이머가 동작 중이면 중지
+
+        Log.d("startTimer", "as")
         stopTimer()
 
         countDownTimer = object : CountDownTimer(60000, 1000) {
@@ -252,9 +341,11 @@ class GameRoomActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                timeRemaining = 0
-                updateTimerText()
-                die()
+                if(myData.isAlive) {
+                    timeRemaining = 0
+                    updateTimerText()
+                    die()
+                }
             }
         }.start()
     }
@@ -292,6 +383,8 @@ class GameRoomActivity : AppCompatActivity() {
                 if(response.isSuccessful) {
                     currentRoom = response.body() ?: Room("1",userList,"","",0,0,true)
                     userList = currentRoom.users
+                    gridViewAdaptor = GridViewAdaptor(this@GameRoomActivity, userList)
+                    gridView?.adapter = gridViewAdaptor
                 }
             }
 
@@ -314,6 +407,7 @@ class GameRoomActivity : AppCompatActivity() {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
                     myData.banWord = tempData.banWord
                     myData.currentRoom = tempData.currentRoom
+                    myData.isAlive = true
                     PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
                     setUserList()
                 }
@@ -359,7 +453,7 @@ class GameRoomActivity : AppCompatActivity() {
                 holder.banWord.text = itemData.banWord[0].toString()
             }
 
-            holder.name.text = itemData.name.toString()
+            holder.name.text = itemData.name
             if(!itemData.isAlive) {
                 holder.diedImageView.visibility = View.VISIBLE
                 holder.name.text = "사망"
@@ -416,13 +510,13 @@ class GameRoomActivity : AppCompatActivity() {
             // if my chat?
             when(holder) {
                 is MessageViewHolder -> {
-                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+                    val resId = resources.getIdentifier("@drawable/"+chats.get(position).avatar, "drawable", "com.example.shutthemouth")
 
                     holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat
                 }
                 is MessageViewHolder2 -> {
-                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+                    val resId = resources.getIdentifier("@drawable/"+chats.get(position).avatar, "drawable", "com.example.shutthemouth")
 
                     holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat

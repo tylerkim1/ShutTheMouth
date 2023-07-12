@@ -44,7 +44,7 @@ interface STMAPI {
     fun setDead(@Body user: User): Call<Void>
 
     @POST("/room/add")
-    fun addRoom(@Body room: Map<String, Room>): Call<Void>
+    fun addRoom(@Body room: Map<String, Room>): Call<Room>
 
     @GET("/room/all")
     fun getRoomList(): Call<List<Room>>

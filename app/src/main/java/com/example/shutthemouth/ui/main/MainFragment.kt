@@ -61,52 +61,55 @@ class MainFragment : Fragment() {
         getRoomList()
 
         binding.mainAddRoom.setOnClickListener {
-            myData?.let { myUser ->
-                val builder = AlertDialog.Builder(requireContext())
+            val builder = AlertDialog.Builder(requireContext())
 
-                // If you want to use custom layout in dialog
-                val inflater = LayoutInflater.from(requireContext())
-                val dialogLayout = inflater.inflate(R.layout.dialog_create_room, null)
+            // If you want to use custom layout in dialog
+            val inflater = LayoutInflater.from(requireContext())
+            val dialogLayout = inflater.inflate(R.layout.dialog_create_room, null)
 
-                val roomNameEditText = dialogLayout.findViewById<EditText>(R.id.createRoom_editText)
-                val roomModeSpinner = dialogLayout.findViewById<Spinner>(R.id.createRoom_mode_spinner)
-                val minPeopleNumberPicker = dialogLayout.findViewById<Spinner>(R.id.createRoom_minPpl_spinner)
-                val maxPeopleNumberPicker = dialogLayout.findViewById<Spinner>(R.id.createRoom_maxPpl_spinner)
+            // Get the EditText and Spinner from your dialog layout
+            val roomNameEditText = dialogLayout.findViewById<EditText>(R.id.createRoom_editText)
+            val roomModeSpinner = dialogLayout.findViewById<Spinner>(R.id.createRoom_mode_spinner)
+            val minPeopleNumberPicker = dialogLayout.findViewById<Spinner>(R.id.createRoom_minPpl_spinner)
+            val maxPeopleNumberPicker = dialogLayout.findViewById<Spinner>(R.id.createRoom_maxPpl_spinner)
+
+            builder.setView(dialogLayout)
+                .setTitle("Create Room")
+                .setPositiveButton("Create") { dialog, _ ->
+                    // Get user input
+                    // var roomId = roomList.size + 1 // Or any other way to generate a unique room ID
+                    val roomName = roomNameEditText.text.toString()
+                    val roomMode = roomModeSpinner.selectedItem.toString()
+                    val minPeople: Int = minPeopleNumberPicker.selectedItem.toString().toInt()
+                    val maxPeople: Int = maxPeopleNumberPicker.selectedItem.toString().toInt()
+
+                    // TODO: Call the API to create room
 
 
-                builder.setView(dialogLayout)
-                    .setTitle("Create Room")
-                    .setPositiveButton("Create") { dialog, _ ->
-                        // Get user input
-                        // var roomId = roomList.size + 1 // Or any other way to generate a unique room ID
-                        val roomName = roomNameEditText.text.toString()
-                        val roomMode = roomModeSpinner.selectedItem.toString()
-                        val minPeople: Int = minPeopleNumberPicker.selectedItem.toString().toInt()
-                        val maxPeople: Int = maxPeopleNumberPicker.selectedItem.toString().toInt()
+                    val mainUserList = arrayListOf<User>()
+                    mainUserList.add(PreferenceUtil(requireContext()).getUser("myUser")!!)
+                    val newRoom = Room("roomId", mainUserList, roomName, roomMode, minPeople, maxPeople, false)
 
-                        val mainUserList = arrayListOf<User>()
-                        mainUserList.add(myUser)
-                        val newRoom = Room("roomId", mainUserList, roomName, roomMode, minPeople, maxPeople, false)
-
-                        val data = mapOf<String, Room>("room" to newRoom)
-                        val call = ApiObject.getRetrofitService.addRoom(data)
-                        call.enqueue(object: Callback<Void> {
-                            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                                Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
-                                if(response.isSuccessful) {
-                                    val intent = Intent(requireContext(), ReadyActivity::class.java)
-                                    startActivity(intent)
-                                }
+                    val data = mapOf<String, Room>("room" to newRoom)
+                    val call = ApiObject.getRetrofitService.addRoom(data)
+                    call.enqueue(object: Callback<Room> {
+                        override fun onResponse(call: Call<Room>, response: Response<Room>) {
+                            Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
+                            if(response.isSuccessful) {
+                                myData.currentRoom = response.body()!!.roomId
+                                PreferenceUtil(requireContext()).setUser("myUser",myData)
+                                val intent = Intent(requireContext(), ReadyActivity::class.java)
+                                startActivity(intent)
                             }
 
-                            override fun onFailure(call: Call<Void>, t: Throwable) {
-                                Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
+                        override fun onFailure(call: Call<Room>, t: Throwable) {
+                            Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
 
                 val dialog = builder.create()
                 dialog.show()

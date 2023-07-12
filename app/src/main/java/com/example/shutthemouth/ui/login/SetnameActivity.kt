@@ -35,7 +35,7 @@ class SetnameActivity : AppCompatActivity() {
                 name = userName,
                 avatar = "nubzuki",
                 isReady = false,
-                isAlive = false,
+                isAlive = true,
                 banWord = ArrayList<String>(),
                 currentRoom = "0"
             )

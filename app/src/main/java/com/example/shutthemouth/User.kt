@@ -8,7 +8,7 @@ data class User (
     var name : String = "-999",
     var avatar : String = "nupzuki",
     var isReady : Boolean = false,
-    var isAlive : Boolean = false,
+    var isAlive : Boolean = true,
     var banWord : ArrayList<String> = ArrayList(),
     var currentRoom : String = "-999",
 ): Serializable

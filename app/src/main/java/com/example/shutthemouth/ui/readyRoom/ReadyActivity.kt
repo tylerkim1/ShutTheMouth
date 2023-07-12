@@ -98,11 +98,6 @@ class ReadyActivity : AppCompatActivity() {
             }
         }
 
-        binding.readyTempbtn.setOnClickListener {
-            val intent = Intent(this, GameRoomActivity::class.java)
-            startActivity(intent)
-        }
-
     }
 
     fun getMe() {
@@ -206,6 +201,8 @@ class ReadyActivity : AppCompatActivity() {
             var nextIndex = myIndex
             if(nextIndex + 1 == userList.size) {
                 nextIndex = 0
+            } else {
+                nextIndex++
             }
 
             nameText.text = "${userList.get(nextIndex).name}님의 금지어는.."
@@ -251,19 +248,21 @@ class ReadyActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val userId = obj.userId
-                        val myIndex = userList.indexOfFirst { it.userId == userId }
-                        Log.d("someone ready", obj.name)
-                        userList[myIndex].isReady = !userList[myIndex].isReady
-                        if(userList[myIndex].isReady) {
-                            readyCount++
+                        if(myData.userId != obj.userId) {
+                            val userId = obj.userId
+                            val myIndex = userList.indexOfFirst { it.userId == userId }
+                            Log.d("someone ready", obj.name)
+                            userList[myIndex].isReady = !userList[myIndex].isReady
+                            if(userList[myIndex].isReady) {
+                                readyCount++
+                                checkAllReady()
+                            } else {
+                                readyCount--
+                            }
+                            adapter.updateData(userList)
+                            adapter.notifyDataSetChanged()
                             checkAllReady()
-                        } else {
-                            readyCount--
                         }
-                        adapter.updateData(userList)
-                        adapter.notifyDataSetChanged()
-                        checkAllReady()
                     }
                 })
             }

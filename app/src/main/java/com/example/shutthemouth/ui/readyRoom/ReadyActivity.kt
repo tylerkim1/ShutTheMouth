@@ -59,7 +59,7 @@ class ReadyActivity : AppCompatActivity() {
         runBlocking {
 //            adapter = ReadyAdapter(userList, this@ReadyActivity)
 //            binding.readyGv.adapter = adapter
-            getMe()
+            getMyRoom()
         }
 
 
@@ -75,9 +75,9 @@ class ReadyActivity : AppCompatActivity() {
 
         mSocket.emit("readyEnter", Gson().toJson(myData))
         mSocket.on("someoneReady", onReadyMessage)
-        mSocket.on("someoneLeave", onLeaveMessage)
+        mSocket.on("someoneLeft", onLeaveMessage)
         mSocket.on("someoneEnter", onEnterMessage)
-        mSocket.on("wordSubmit", onSubmitMessage)
+        mSocket.on("someoneSubmit", onSubmitMessage)
 
         // getMyRoom()
 
@@ -117,6 +117,7 @@ class ReadyActivity : AppCompatActivity() {
                 if(response.isSuccessful) {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
                     myData.currentRoom = tempData.currentRoom
+                    Log.d("my room ", myData.currentRoom)
                     PreferenceUtil(this@ReadyActivity).setUser("myUser",myData)
                     getMyRoom()
                 }
@@ -174,7 +175,9 @@ class ReadyActivity : AppCompatActivity() {
         val call = ApiObject.getRetrofitService.leaveRoom(data)
         call.enqueue(object: Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                mSocket.emit("leave", Gson().toJson(myData))
+                mSocket.emit("left", Gson().toJson(myData))
+                myData.isReady = false
+                PreferenceUtil(this@ReadyActivity).setUser("myUser",myData)
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
                     Toast.makeText(applicationContext, "leaved", Toast.LENGTH_SHORT).show()
@@ -212,13 +215,18 @@ class ReadyActivity : AppCompatActivity() {
                     banWordBtn.setBackgroundResource(R.drawable.ready_btn)
                     banWordBtn.isEnabled = false
 
-                    val data = mapOf<String,User>("user" to userList.get(nextIndex))
+                    var nextPerson = userList.get(nextIndex)
+                    val tempList = ArrayList<String>()
+                    tempList.add(banWordEdit.text.toString())
+                    nextPerson.banWord = tempList
+
+                    val data = mapOf<String,User>("user" to nextPerson)
                     val call = ApiObject.getRetrofitService.setBanwords(data)
                     call.enqueue(object: Callback<Void> {
                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                             Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                             if(response.isSuccessful) {
-                                mSocket.emit("submit", myData)
+                                mSocket.emit("submit", Gson().toJson(myData))
                             }
                         }
 
@@ -269,6 +277,7 @@ class ReadyActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
+
                         submitCount++
                         Log.d("someone submit", obj.name)
                         if(submitCount == userList.size) {
@@ -279,6 +288,7 @@ class ReadyActivity : AppCompatActivity() {
                             val intent = Intent(this@ReadyActivity, GameRoomActivity::class.java)
                             startActivity(intent)
                         }
+
                     }
                 })
             }

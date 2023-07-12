@@ -63,6 +63,8 @@ class GameRoomActivity : AppCompatActivity() {
         // myData.userId = PreferenceUtil(this).getString("userId","")
 
         // getMe()
+        myData = PreferenceUtil(this).getUser("myUser")!!
+
         runBlocking {
 //            adapter = ReadyAdapter(userList, this@ReadyActivity)
 //            binding.readyGv.adapter = adapter
@@ -86,8 +88,8 @@ class GameRoomActivity : AppCompatActivity() {
 
         // setUserList()
         gridView = findViewById(R.id.gameroom_grid)
-        gridViewAdaptor = GridViewAdaptor(this, userList)
-        gridView?.adapter = gridViewAdaptor
+//        gridViewAdaptor = GridViewAdaptor(this, userList)
+//        gridView?.adapter = gridViewAdaptor
 
         timerTextView = findViewById(R.id.gameroom_timer)
 
@@ -199,6 +201,7 @@ class GameRoomActivity : AppCompatActivity() {
         // PreferenceUtil(this).setBoolean("isAlive", false)
         myData.isAlive = false
         PreferenceUtil(this).setUser("myUser",myData)
+        mSocket.emit("dead", Gson().toJson(myData))
         updateUser()
         resultString = resultString + "\n#${userList.size-deadCount} ${myData.name}"
         deadCount++
@@ -292,6 +295,8 @@ class GameRoomActivity : AppCompatActivity() {
                 if(response.isSuccessful) {
                     currentRoom = response.body() ?: Room("1",userList,"","",0,0,true)
                     userList = currentRoom.users
+                    gridViewAdaptor = GridViewAdaptor(this@GameRoomActivity, userList)
+                    gridView?.adapter = gridViewAdaptor
                 }
             }
 
@@ -314,6 +319,7 @@ class GameRoomActivity : AppCompatActivity() {
                     val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
                     myData.banWord = tempData.banWord
                     myData.currentRoom = tempData.currentRoom
+                    myData.isAlive = true
                     PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
                     setUserList()
                 }
@@ -416,13 +422,13 @@ class GameRoomActivity : AppCompatActivity() {
             // if my chat?
             when(holder) {
                 is MessageViewHolder -> {
-                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+                    val resId = resources.getIdentifier("@drawable/"+chats.get(position).avatar, "drawable", "com.example.shutthemouth")
 
                     holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat
                 }
                 is MessageViewHolder2 -> {
-                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+                    val resId = resources.getIdentifier("@drawable/"+chats.get(position).avatar, "drawable", "com.example.shutthemouth")
 
                     holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat

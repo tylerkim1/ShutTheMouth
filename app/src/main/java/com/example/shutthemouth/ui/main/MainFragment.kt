@@ -93,16 +93,18 @@ class MainFragment : Fragment() {
 
                     val data = mapOf<String, Room>("room" to newRoom)
                     val call = ApiObject.getRetrofitService.addRoom(data)
-                    call.enqueue(object: Callback<Void> {
-                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    call.enqueue(object: Callback<Room> {
+                        override fun onResponse(call: Call<Room>, response: Response<Room>) {
                             Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
                             if(response.isSuccessful) {
+                                myData.currentRoom = response.body()!!.roomId
+                                PreferenceUtil(requireContext()).setUser("myUser",myData)
                                 val intent = Intent(requireContext(), ReadyActivity::class.java)
                                 startActivity(intent)
                             }
                         }
 
-                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                        override fun onFailure(call: Call<Room>, t: Throwable) {
                             Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
                         }
                     })

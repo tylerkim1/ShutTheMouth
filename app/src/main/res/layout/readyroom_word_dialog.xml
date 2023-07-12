@@ -14,6 +14,7 @@
         android:gravity="center"
         android:textSize="30dp"
         android:text="~~님의 금지어는"
+        android:textColor="@color/black"
         android:fontFamily="@font/dunggeunmo"
         />
 

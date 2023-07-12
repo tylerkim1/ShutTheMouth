@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
     lateinit var roomList: List<Room>
     lateinit var refreshLayout : SwipeRefreshLayout
 
-    lateinit var myData : User
+    var myData : User? = null   // make this nullable
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -46,8 +46,7 @@ class MainFragment : Fragment() {
         // setDummyData
         // setDummyMe()
 
-        myData = PreferenceUtil(requireContext()).getUser("myUser")!!
-
+        myData = PreferenceUtil(requireContext()).getUser("myUser")
 
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -102,7 +101,6 @@ class MainFragment : Fragment() {
                                 val intent = Intent(requireContext(), ReadyActivity::class.java)
                                 startActivity(intent)
                             }
-                        }
 
                         override fun onFailure(call: Call<Room>, t: Throwable) {
                             Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
@@ -113,36 +111,41 @@ class MainFragment : Fragment() {
                     dialog.dismiss()
                 }
 
-            val dialog = builder.create()
-            dialog.show()
-        }
+                val dialog = builder.create()
+                dialog.show()
+                // Rest of your code...
 
+            } ?: run {
+                Toast.makeText(requireContext(), "User data is not available", Toast.LENGTH_SHORT).show()
+            }
+        }
         roomGridView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             Toast.makeText(
                 requireContext(), roomList[position].roomId.toString() + " selected",
                 Toast.LENGTH_SHORT
             ).show()
 
-
-            val data = STMAPI.EnterRoomRequest(myData, roomList[position].roomId)
-            val call = ApiObject.getRetrofitService.enterRoom(data)
-            call.enqueue(object: Callback<Boolean> {
-                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                    Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
-                    if(response.isSuccessful) {
-                        myData.currentRoom = roomList.get(position).roomId
-                        PreferenceUtil(requireContext()).setUser("myUser",myData)
-                        val intent = Intent(requireContext(), ReadyActivity::class.java)
-                        startActivity(intent)
+            myData?.let { user ->
+                val data = STMAPI.EnterRoomRequest(user, roomList[position].roomId)
+                val call = ApiObject.getRetrofitService.enterRoom(data)
+                call.enqueue(object: Callback<Boolean> {
+                    override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                        Toast.makeText(requireContext(), "Call Success", Toast.LENGTH_SHORT).show()
+                        if(response.isSuccessful) {
+                            user.currentRoom = roomList.get(position).roomId
+                            PreferenceUtil(requireContext()).setUser("myUser",user)
+                            val intent = Intent(requireContext(), ReadyActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
-                }
-            })
-
-
+                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                        Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            } ?: run {
+                Toast.makeText(requireContext(), "User data is not available", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return root

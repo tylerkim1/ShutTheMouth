@@ -20,6 +20,7 @@ import com.example.shutthemouth.ui.GameRoom.GameRoomActivity
 import com.example.shutthemouth.ui.GameRoom.SocketApplication
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -70,7 +71,9 @@ class ReadyActivity : AppCompatActivity() {
             myData.isReady = !myData.isReady
             val myIndex = userList.indexOfFirst { it.userId == myData.userId }
             userList.get(myIndex).isReady = myData.isReady
-            mSocket.emit("ready", Gson().toJson(myData))
+            runBlocking{
+                mSocket.emit("ready", Gson().toJson(myData))
+            }
             adapter.notifyDataSetChanged()
             if(myData.isReady) {
                 readyCount++
@@ -195,7 +198,9 @@ class ReadyActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                             Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                             if(response.isSuccessful) {
-                                mSocket.emit("submit", myData)
+                                runBlocking {
+                                    mSocket.emit("submit", myData)
+                                }
                             }
                         }
 
@@ -216,16 +221,18 @@ class ReadyActivity : AppCompatActivity() {
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
+                        runBlocking{
                         val msg = obj.get("userId") as String
                         if(msg != myData.userId) {
                             val myIndex = userList.indexOfFirst { it.userId == msg }
                             userList[myIndex].isReady = !userList[myIndex].isReady
-                            if(userList[myIndex].isReady) {
+                            if (userList[myIndex].isReady) {
                                 readyCount++
                                 checkAllReady()
                             } else {
                                 readyCount--
                             }
+                        }
                             adapter.notifyDataSetChanged()
                             checkAllReady()
                         }

@@ -1,6 +1,6 @@
 ![main_logo](https://github.com/tylerkim1/ShutTheMouth/assets/61447161/c192c6bf-5150-4dc3-8bf7-5488506f69e2)
 
-## ShutTheMouth - by. 박윤배, 남지현, 김태형 ( 7 / 6 ~ 7 / 12)
+## ShutTheMouth - by. 박윤배, 남지현, 김태형 ( 7 / 6 ~ 7 / 12 )
 
 특정 단어를 말하면 탈락! 자신만의 넙죽이를 꾸며서 Shut the mouth King이 되어보세요!
 

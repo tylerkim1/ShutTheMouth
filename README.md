@@ -12,7 +12,8 @@
 
 #### A. 구글 로그인
 최초에 앱을 실행하면 유저는 구글 계정을 이용해 로그인을 할 수 있습니다. 구글 로그인 이후, 유저는 자신만의 고유한 이름을 설정하게 됩니다.
-![image](https://github.com/tylerkim1/ShutTheMouth/assets/61447161/615e5c39-5851-4ec4-b32b-1a3cece071c5)
+
+<img src="https://github.com/tylerkim1/ShutTheMouth/assets/61447161/615e5c39-5851-4ec4-b32b-1a3cece071c5" width="200" height="400"/>
 
 
 #### B. 메인 페이지

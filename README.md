@@ -47,4 +47,4 @@
   
 
 ### 5. 다운로드
-https://drive.google.com/file/d/1a8rezPPiwCE_bV1psrzJsxa2dhEqKqSy/view?usp=sharing
+https://drive.google.com/file/d/1MI-n3kcS8xc1de2TUorC0PKwTcz1yPRK/view?usp=sharing

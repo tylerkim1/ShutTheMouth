@@ -7,17 +7,17 @@ interface STMAPI {
     @GET("/user/all")
     fun getUserAll(): Call<List<User>>
 
-    @GET("/user/get")
-    fun getUser(@Body user: User): Call<User>
+    @POST("/user/get")
+    fun getUser(@Body user: Map<String,User>): Call<User>
 
     @POST("/user/add")
-    fun addUser(@Body user: Map<String, User>): Call<Int>
+    fun addUser(@Body user: Map<String, User>): Call<User>
 
-    @POST("/user/getMe")
-    fun getMe(@Body user: User): Call<User>
+    @POST("/user/get")
+    fun getMe(@Body user: Map<String,User>): Call<User>
 
     @POST("/user/exist")
-    fun isUserExist(@Body user: User): Call<Boolean>
+    fun isUserExist(@Body user: Map<String, User>): Call<User>
 
     @POST("/user/nameExist")
     fun isNameExist(@Body user: Map<String, User>): Call<Boolean>
@@ -26,34 +26,34 @@ interface STMAPI {
     fun deleteUser(@Body user: User): Call<Void>
 
     @POST("/user/avatar")
-    fun setAvatar(@Body user: User): Call<Void>
+    fun setAvatar(@Body user: Map<String,User>): Call<Void>
 
     @POST("/user/ready")
     fun setReady(@Body user: User): Call<Void>
 
     @POST("/user/banwords")
-    fun setBanwords(@Body user: User): Call<Void>
+    fun setBanwords(@Body user: Map<String, User>): Call<Void>
 
     @POST("/room/enter")
     fun enterRoom(@Body request: EnterRoomRequest): Call<Boolean>
 
     @POST("/room/leave")
-    fun leaveRoom(@Body user: User): Call<Void>
+    fun leaveRoom(@Body user: Map<String,User>): Call<Void>
 
     @POST("/user/dead")
     fun setDead(@Body user: User): Call<Void>
 
     @POST("/room/add")
-    fun addRoom(@Body room: Room): Call<Void>
+    fun addRoom(@Body room: Map<String, Room>): Call<Void>
 
     @GET("/room/all")
     fun getRoomList(): Call<List<Room>>
 
-    @GET("/room/getMyRoom")
-    fun getMyRoom(@Body user: User): Call<Room>
+    @POST("/room/getMyRoom")
+    fun getMyRoom(@Body user: Map<String,User>): Call<Room>
 
     data class EnterRoomRequest(
         val user: User,
-        val roomId: Int
+        val roomId: String
     )
 }

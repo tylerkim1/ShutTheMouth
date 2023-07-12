@@ -3,7 +3,6 @@ package com.example.shutthemouth.ui.GameRoom
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -19,6 +18,7 @@ import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shutthemouth.ApiObject
@@ -30,11 +30,11 @@ import com.example.shutthemouth.User
 import com.example.shutthemouth.checkBanWord
 import com.google.gson.Gson
 import io.socket.emitter.Emitter
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.IllegalArgumentException
 
 class GameRoomActivity : AppCompatActivity() {
 
@@ -60,14 +60,14 @@ class GameRoomActivity : AppCompatActivity() {
     private var gridView : GridView? = null
     private var timerTextView : TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-        // set dummy name
-        PreferenceUtil(this).setString("name","younbae1")
-        PreferenceUtil(this).setString("avatar","avatar1")
-        PreferenceUtil(this).setBoolean("isAlive",true)
-//        val testArray = ArrayList<String>()
-//        testArray.add("aa")
-        getMe()
-        testAdd()
+        // myData.userId = PreferenceUtil(this).getString("userId","")
+
+        // getMe()
+        runBlocking {
+//            adapter = ReadyAdapter(userList, this@ReadyActivity)
+//            binding.readyGv.adapter = adapter
+            getMe()
+        }
 
         mSocket = SocketApplication.get()
         mSocket.connect()
@@ -118,7 +118,7 @@ class GameRoomActivity : AppCompatActivity() {
             val tempText = chatEditText.text
             if(!tempText.isEmpty() && myData.isAlive) {
                 // chats.add(TestChat(myData.name,tempText.toString(),myData.avatar, myData.currentRoom))
-                sendChat(tempText.toString())
+
                 recyclerViewAdaptor.notifyDataSetChanged()
                 if(checkBanWord(tempText.toString(), myData)) {
                     die()
@@ -126,20 +126,21 @@ class GameRoomActivity : AppCompatActivity() {
                 resetTimer()
                 chatEditText.setText("")
             }
+            sendChat(tempText.toString())
         }
     }
 
     var onDeadMessage = Emitter.Listener { args ->
-        Log.d("fdf","dfdfdfdfdfd")
-        val obj = JSONObject(args[0].toString())
+        val obj: User = Gson().fromJson(args[0].toString(), User::class.java)
+
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("userId") as Int
-                        val myIndex = userList.indexOfFirst { it.userId == msg }
+                        val userId = obj.userId
+                        val myIndex = userList.indexOfFirst { it.userId == userId }
                         userList[myIndex].isAlive = false
-                        resultString = resultString + "\n#${userList.size-deadCount} ${msg}"
+                        resultString = resultString + "\n#${userList.size-deadCount} ${userId}"
                         deadCount++
                         gridViewAdaptor.notifyDataSetChanged()
                         checkAmIWinner()
@@ -195,8 +196,9 @@ class GameRoomActivity : AppCompatActivity() {
 
     private fun die() {
         Toast.makeText(this, "you died", Toast.LENGTH_SHORT).show()
-        PreferenceUtil(this).setBoolean("isAlive", false)
+        // PreferenceUtil(this).setBoolean("isAlive", false)
         myData.isAlive = false
+        PreferenceUtil(this).setUser("myUser",myData)
         updateUser()
         resultString = resultString + "\n#${userList.size-deadCount} ${myData.name}"
         deadCount++
@@ -207,16 +209,17 @@ class GameRoomActivity : AppCompatActivity() {
 
 
     var onMessage = Emitter.Listener { args ->
-        Log.d("fdf","dfdfdfdfdfd")
-        val obj = JSONObject(args[0].toString())
+
+        val obj: TestChat = Gson().fromJson(args[0].toString(), TestChat::class.java)
+        Log.d("message", obj.chat)
         Thread(object : Runnable{
             override fun run() {
                 runOnUiThread(Runnable {
                     kotlin.run {
-                        val msg = obj.get("chat").toString()
-                        val name = obj.get("name").toString()
-                        val avatar = obj.get("avatar") as Int
-                        val room = obj.get("room") as Int
+                        val msg = obj.chat
+                        val name = obj.name
+                        val avatar = obj.avatar
+                        val room = obj.room
                         val tempChat = TestChat(name, msg, avatar, room)
                         chats.add(tempChat)
                         recyclerView!!.adapter?.notifyDataSetChanged()
@@ -281,86 +284,45 @@ class GameRoomActivity : AppCompatActivity() {
     }
 
     fun setUserList() {
-
-        testArray.add("aa")
-        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1))
-//        val call = ApiObject.getRetrofitService.getMyRoom(myData)
-//        call.enqueue(object: Callback<Room> {
-//            override fun onResponse(call: Call<Room>, response: Response<Room>) {
-//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-//                if(response.isSuccessful) {
-//                    currentRoom = response.body() ?: Room(1,userList,"","",0,0,true)
-//                    userList = currentRoom.users
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<Room>, t: Throwable) {
-//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-
-    }
-
-    fun testAdd() {
-        testArray.add("aa")
-        userList.add(User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(2,"abc2","younbae2", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(3,"abc3","younbae3", R.drawable.avatar2,true,true,testArray,1))
-        userList.add(User(4,"abc4","younbae4", R.drawable.avatar2,true,true,testArray,1))
-        for(i in userList) {
-            val data = mapOf("user" to i)
-            val call = ApiObject.getRetrofitService.addUser(data)
-            call.enqueue(object: Callback<Int> {
-                override fun onResponse(call: Call<Int>, response: Response<Int>) {
-                    Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-                    if(response.isSuccessful) {
-                        val resultInt = response.body() ?: 0
-                        Log.d("success", resultInt.toString())
-                    }
-                }
-
-                override fun onFailure(call: Call<Int>, t: Throwable) {
-                    Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
-
-        val roomTemp = Room(1,userList,"abc","default",2,3,true)
-
-        val call = ApiObject.getRetrofitService.addRoom(roomTemp)
-        call.enqueue(object: Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+        val data = mapOf<String,User>("user" to myData)
+        val call = ApiObject.getRetrofitService.getMyRoom(data)
+        call.enqueue(object: Callback<Room> {
+            override fun onResponse(call: Call<Room>, response: Response<Room>) {
                 Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
                 if(response.isSuccessful) {
-                    Log.d("success", "roomadded")
+                    currentRoom = response.body() ?: Room("1",userList,"","",0,0,true)
+                    userList = currentRoom.users
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<Room>, t: Throwable) {
                 Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
             }
         })
 
     }
+
     fun getMe() {
-        myData =  User(1,"abc1","younbae1", R.drawable.avatar2,true,true,testArray,1)
-//        val call = ApiObject.getRetrofitService.getMe(myData)
-//        call.enqueue(object: Callback<User> {
-//            override fun onResponse(call: Call<User>, response: Response<User>) {
-//                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
-//                if(response.isSuccessful) {
-//                    myData = response.body() ?: User(1,"abc","younbae", R.drawable.avatar2,true,true,testArray,1)
-//
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<User>, t: Throwable) {
-//                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
-//            }
-//        })
+        myData = PreferenceUtil(this).getUser("myUser")!!
+
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.getMe(data)
+        call.enqueue(object: Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                Toast.makeText(applicationContext, "Call Success", Toast.LENGTH_SHORT).show()
+                if(response.isSuccessful) {
+                    val tempData = response.body() ?: User("1","abc","younbae", "avatar2",true,true,testArray,"1")
+                    myData.banWord = tempData.banWord
+                    myData.currentRoom = tempData.currentRoom
+                    PreferenceUtil(this@GameRoomActivity).setUser("myUser",myData)
+                    setUserList()
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(applicationContext, "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     inner class GridViewAdaptor(private var context: Context? ,private var userList: ArrayList<User>) : BaseAdapter() {
@@ -442,7 +404,8 @@ class GameRoomActivity : AppCompatActivity() {
 
         override fun getItemViewType(position: Int): Int {
             val tempChat = chats[position]
-            if (tempChat.name == PreferenceUtil(this@GameRoomActivity).getString("name", "")) {
+            if (tempChat.name == myData.name) {
+                // 여기 비동기 될수도
                 return VIEW_TYPE_SENT
             } else {
                 return VIEW_TYPE_RECEIVED
@@ -453,11 +416,15 @@ class GameRoomActivity : AppCompatActivity() {
             // if my chat?
             when(holder) {
                 is MessageViewHolder -> {
-                    holder.avatarImage.setImageResource(chats.get(position).avatar)
+                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+
+                    holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat
                 }
                 is MessageViewHolder2 -> {
-                    holder.avatarImage.setImageResource(chats.get(position).avatar)
+                    val resId = resources.getIdentifier(chats.get(position).avatar, "drawable", "com.example.shutthemouth.ui.closet")
+
+                    holder.avatarImage.setImageResource(resId)
                     holder.chatText.text = chats.get(position).chat
                 }
                 else -> throw IllegalArgumentException("view holder")

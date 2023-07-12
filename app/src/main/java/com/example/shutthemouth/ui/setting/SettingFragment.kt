@@ -6,13 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.shutthemouth.MainActivity
 import com.example.shutthemouth.PreferenceUtil
-import com.example.shutthemouth.R
 import com.example.shutthemouth.databinding.FragmentSettingBinding
 import com.example.shutthemouth.ui.login.LoginActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -29,6 +25,9 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        val myUser = PreferenceUtil(requireContext()).getUser("myUser")
+        Log.d("my User ", myUser.toString())
+
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
         val view = binding.root
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -41,19 +40,17 @@ class SettingFragment : Fragment() {
         val nameTextView = binding.settingName
         val logoutButton = binding.settingLogout
 
-//        val userAvatar = PreferenceUtil(requireContext()).getInt("avatar", 0)
-        val userName = PreferenceUtil(requireContext()).getString("name", "")
-
-//        Log.d("SettingFragment", "User Avatar: $userAvatar")
-//
-//        avatarImageView.setImageResource(userAvatar)
+        val userName = myUser?.name
         nameTextView.text = userName
 
+        val userAvatar = myUser?.avatar
+        val resId = resources.getIdentifier("@drawable/"+userAvatar, "drawable", "com.example.shutthemouth")
+        avatarImageView.setImageResource(resId)
+
         logoutButton.setOnClickListener {
-            mGoogleSignInClient.signOut()
-                .addOnCompleteListener(requireActivity()) {
-                    signOutFun()
-                }
+            mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity()) {
+                signOutFun()
+            }
         }
 
         return view

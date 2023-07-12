@@ -6,10 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.example.shutthemouth.ApiObject
+import com.example.shutthemouth.PreferenceUtil
 import com.example.shutthemouth.R
+import com.example.shutthemouth.User
 import com.example.shutthemouth.databinding.FragmentClosetBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ClosetFragment : Fragment() {
 
@@ -17,6 +23,8 @@ class ClosetFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     val avatarList = arrayListOf<Int>()
+    lateinit var myData : User
+
     var avIdx = 0
 
     override fun onCreateView(
@@ -26,18 +34,32 @@ class ClosetFragment : Fragment() {
     ): View {
         binding = FragmentClosetBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        myData = PreferenceUtil(requireContext()).getUser("myUser")!!
 
-
-
-        binding.closetAvatar.setImageResource(R.drawable.nubzuki)
-        binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
+        val currentNubzuk = myData!!.avatar
+        val resId = resources.getIdentifier("@drawable/"+currentNubzuk, "drawable", "com.example.shutthemouth")
+        binding.closetAvatar.setImageResource(resId)
+        if(currentNubzuk == "nubzuki") {
+            binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
+        } else if(currentNubzuk == "nubzuki_sunglass") {
+            binding.closetBack.setImageResource(R.drawable.closet_back_ufo)
+        } else if(currentNubzuk == "nubzuki_pant") {
+            binding.closetBack.setImageResource(R.drawable.closet_back_mun)
+        } else if(currentNubzuk == "nubzuki_glass") {
+            binding.closetBack.setImageResource(R.drawable.closet_back_club)
+        } else if(currentNubzuk == "nubzuki_mask") {
+            binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
+        } else {
+            binding.closetBack.setImageResource(R.drawable.closet_back_kaist)
+        }
 
         //옷장 아이템 추가
         val closetItemList = arrayListOf<ClosetItem>()
-        closetItemList.add(ClosetItem(R.drawable.gameroom_died, R.drawable.nubzuki, "default",R.drawable.closet_back_kaist))
-        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuk_sunglass, "sunglass",R.drawable.closet_back_ufo))
-        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuk_pant, "pant",R.drawable.closet_back_mun))
-        closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "glass",R.drawable.closet_back_club))
+        closetItemList.add(ClosetItem(R.drawable.gameroom_died, R.drawable.nubzuki, "nubzuki",R.drawable.closet_back_kaist))
+        closetItemList.add(ClosetItem(R.drawable.item_sunglass, R.drawable.nubzuki_sunglass, "nubzuki_sunglass",R.drawable.closet_back_ufo))
+        closetItemList.add(ClosetItem(R.drawable.item_pants, R.drawable.nubzuki_pant, "nubzuki_pant",R.drawable.closet_back_mun))
+        closetItemList.add(ClosetItem(R.drawable.item_glass, R.drawable.nubzuki_glass, "nubzuki_glass",R.drawable.closet_back_club))
+        closetItemList.add(ClosetItem(R.drawable.nubzuki_mask_item, R.drawable.nubzuki_mask, "nubzuki_mask",R.drawable.closet_back_club))
 
         //어댑터 연결
         val adapter = ClosetAdapter(closetItemList, requireContext())
@@ -46,10 +68,30 @@ class ClosetFragment : Fragment() {
             // MainActivity의 바인딩된 ImageView에 선택된 이미지를 설정합니다.
             binding.closetAvatar.setImageResource(closetItemList[position].avatar_img)
             binding.closetBack.setImageResource(closetItemList[position].back)
+            myData.avatar = closetItemList[position].name
+            PreferenceUtil(requireContext()).setUser("myUser",myData)
+            setAvatar()
             Log.d(closetItemList[position].name, "item")
         }
 
         return root
+    }
+
+    fun setAvatar() {
+
+        val data = mapOf<String, User>("user" to myData)
+        val call = ApiObject.getRetrofitService.setAvatar(data)
+        call.enqueue(object: Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if(response.isSuccessful) {
+                    Toast.makeText(requireContext(),"아바타 변경 완료!",Toast.LENGTH_SHORT)
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(requireContext(), "Call Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onDestroyView() {

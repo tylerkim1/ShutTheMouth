@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_main" />
 
     <fragment
-        android:id="@+id/navigation_temp"
-        android:name="com.example.shutthemouth.ui.temp.TempFragment"
-        android:label="@string/title_setting"
-        tools:layout="@layout/fragment_temp" />
-
-    <fragment
         android:id="@+id/navigation_closet"
         android:name="com.example.shutthemouth.ui.closet.ClosetFragment"
         android:label="@string/title_closet"
